@@ -23,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
             left: 32,
             right: 32,
             top: 64,
-            bottom: 16,
+            bottom: 64,
           ),
           child: Column(
             children: [
@@ -44,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   context,
                 ).textTheme.bodyMedium!.copyWith(color: white),
               ),
-              SizedBox(height: 32),
+              SizedBox(height: 64),
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -87,6 +87,10 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               SizedBox(height: 16),
               PrimaryButton(text: "Play a new match", onPressed: () {}),
+              Spacer(),
+              PrimaryButton(text: "Options", onPressed: () {}),
+              SizedBox(height: 16),
+              PrimaryButton(text: "Documentation", onPressed: () {}),
             ],
           ),
         ),
