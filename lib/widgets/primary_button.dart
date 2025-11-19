@@ -4,6 +4,7 @@ import 'package:pocketgm/constants/colors..dart';
 class PrimaryButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String text;
+  final IconData? icon;
   final double width;
   final double height;
 
@@ -11,6 +12,7 @@ class PrimaryButton extends StatelessWidget {
     super.key,
     required this.onPressed,
     required this.text,
+    this.icon,
     this.width = double.infinity,
     this.height = 60,
   });
@@ -29,13 +31,22 @@ class PrimaryButton extends StatelessWidget {
           ),
         ),
         onPressed: onPressed,
-        child: Text(
-          text,
-          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-            color: white,
-
-            fontWeight: FontWeight.bold,
-          ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (icon != null) ...[
+              Icon(icon, color: white.withOpacity(0.7), size: 20),
+              const SizedBox(width: 10),
+            ],
+            Text(
+              text,
+              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                color: white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
         ),
       ),
     );
