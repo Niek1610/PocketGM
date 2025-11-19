@@ -1,6 +1,7 @@
 import 'package:dartchess/dartchess.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pocketgm/constants/colors..dart';
 import 'package:pocketgm/providers/game_provider.dart';
 import 'package:pocketgm/widgets/primary_button.dart';
@@ -57,7 +58,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   SizedBox(height: 16),
                   Text(
                     textAlign: TextAlign.center,
-                    "een technisch prototype dat real-time schaakanalyse mogelijk maakt tijdens over-the-board partijen.",
+                    "a technical prototype that enables real-time chess analysis during over-the-board games.",
                     style: Theme.of(
                       context,
                     ).textTheme.bodyMedium!.copyWith(color: white),
@@ -105,19 +106,25 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   PrimaryButton(
                     text: "Play a new match",
                     icon: Icons.play_arrow_rounded,
-                    onPressed: () {},
+                    onPressed: () {
+                      context.push('/game');
+                    },
                   ),
                   Spacer(),
                   PrimaryButton(
                     text: "Options",
                     icon: Icons.settings_outlined,
-                    onPressed: () {},
+                    onPressed: () {
+                      context.push('/settings');
+                    },
                   ),
                   SizedBox(height: 16),
                   PrimaryButton(
                     text: "Documentation",
                     icon: Icons.article_outlined,
-                    onPressed: () {},
+                    onPressed: () {
+                      context.push('/documentation');
+                    },
                   ),
                 ],
               ),
