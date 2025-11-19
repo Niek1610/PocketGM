@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pocketgm/constants/colors..dart';
 import 'package:pocketgm/providers/game_provider.dart';
+import 'package:pocketgm/widgets/app_scaffold.dart';
 import 'package:pocketgm/widgets/primary_button.dart';
 import 'package:pocketgm/widgets/select_button.dart';
 
@@ -20,8 +21,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final gameState = ref.watch(gameProvider);
     final playingAs = gameState.playingAs;
 
-    return Scaffold(
-      backgroundColor: primaryColor,
+    return AppScaffold(
+      showBackButton: false,
       body: Stack(
         children: [
           Opacity(
@@ -41,19 +42,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               padding: const EdgeInsets.only(
                 left: 32,
                 right: 32,
-                top: 64,
+                top: 32,
                 bottom: 64,
               ),
               child: Column(
                 children: [
-                  Container(
-                    margin: EdgeInsets.only(top: 64),
-                    child: Text(
-                      'PocketGM',
-                      style: Theme.of(
-                        context,
-                      ).textTheme.displayLarge!.copyWith(color: white),
-                    ),
+                  Text(
+                    'PocketGM',
+                    style: Theme.of(
+                      context,
+                    ).textTheme.displayLarge!.copyWith(color: white),
                   ),
                   SizedBox(height: 16),
                   Text(
