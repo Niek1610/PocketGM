@@ -78,9 +78,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       Expanded(
                         child: SelectButton(
                           onPressed: () {
-                            ref
-                                .read(gameProvider.notifier)
-                                .setColor(Side.white);
+                            ref.read(gameProvider).setPlayingAs(Side.white);
                           },
                           isWhite: true,
                           isSelected: playingAs == Side.white,
@@ -90,9 +88,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       Expanded(
                         child: SelectButton(
                           onPressed: () {
-                            ref
-                                .read(gameProvider.notifier)
-                                .setColor(Side.black);
+                            ref.read(gameProvider).setPlayingAs(Side.black);
                           },
                           isWhite: false,
                           isSelected: playingAs == Side.black,
