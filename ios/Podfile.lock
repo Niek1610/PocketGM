@@ -36,12 +36,12 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/volume_controller/ios"
 
 SPEC CHECKSUMS:
-  device_info_plus: 21fcca2080fbcd348be798aa36c3e5ed849eefbe
+  device_info_plus: bf2e3232933866d73fe290f2942f2156cdd10342
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_blue_plus_darwin: 20a08bfeaa0f7804d524858d3d8744bcc1b6dbc3
-  shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
-  vibration: 69774ad57825b11c951ee4c46155f455d7a592ce
-  volume_controller: 3657a1f65bedb98fa41ff7dc5793537919f31b12
+  flutter_blue_plus_darwin: 904ed52825285a15f60e9d90312337a09f11a785
+  shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
+  vibration: 3797858f8cbf53d841e189ef8bd533d96e4ca93c
+  volume_controller: 2e3de73d6e7e81a0067310d17fb70f2f86d71ac7
 
 PODFILE CHECKSUM: 4305caec6b40dde0ae97be1573c53de1882a07e5
 
