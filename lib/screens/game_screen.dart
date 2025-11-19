@@ -112,13 +112,21 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                   spacing: 8,
                   children: [
                     Expanded(
-                      child: PrimaryButton(onPressed: () {}, text: "Reset"),
+                      child: PrimaryButton(
+                        onPressed: () {
+                          gameState.resetGame();
+                        },
+                        text: "Reset",
+                      ),
                     ),
+
                     Expanded(
-                      child: PrimaryButton(onPressed: () {}, text: "Repeat"),
-                    ),
-                    Expanded(
-                      child: PrimaryButton(onPressed: () {}, text: "Undo"),
+                      child: PrimaryButton(
+                        onPressed: () {
+                          gameState.undoMove();
+                        },
+                        text: "Undo",
+                      ),
                     ),
                   ],
                 ),

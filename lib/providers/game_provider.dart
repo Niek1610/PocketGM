@@ -20,17 +20,6 @@ class GameProvider extends ChangeNotifier {
   List<Move> get moveHistory => List.unmodifiable(_moveHistory);
   Move? get lastMove => _lastMove;
 
-  bool get isGameOver => _position.isGameOver;
-  bool get isCheckmate => _position.isCheckmate;
-  bool get isStalemate => _position.isStalemate;
-  bool get isInCheck => _position.isCheck;
-
-  //when checkmate and white is to move, black wins
-  String? get winner {
-    if (!isCheckmate) return null;
-    return sideToMove == Side.white ? 'Black' : 'White';
-  }
-
   IMapOfSets<String, String> get validMoves {
     final Map<String, Set<String>> moves = {};
 
@@ -98,10 +87,6 @@ class GameProvider extends ChangeNotifier {
   Future<void> setPlayingAs(Side color) async {
     _playingAs = color;
     notifyListeners();
-
-    if (kDebugMode) {
-      print('Playing as: ${color.name}');
-    }
 
     await StorageService().saveColor(color);
   }
