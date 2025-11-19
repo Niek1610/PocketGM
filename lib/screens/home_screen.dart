@@ -1,20 +1,24 @@
+import 'package:dartchess/dartchess.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pocketgm/constants/colors..dart';
+import 'package:pocketgm/providers/game_provider.dart';
 import 'package:pocketgm/widgets/primary_button.dart';
 import 'package:pocketgm/widgets/select_button.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  String _selectedColor = 'white';
-
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
+    final gameState = ref.watch(gameProvider);
+    final playingAs = gameState.playingAs;
+
     return Scaffold(
       backgroundColor: primaryColor,
       body: Stack(
@@ -75,24 +79,24 @@ class _HomeScreenState extends State<HomeScreen> {
                       Expanded(
                         child: SelectButton(
                           onPressed: () {
-                            setState(() {
-                              _selectedColor = 'white';
-                            });
+                            ref
+                                .read(gameProvider.notifier)
+                                .setColor(Side.white);
                           },
                           isWhite: true,
-                          isSelected: _selectedColor == 'white',
+                          isSelected: playingAs == Side.white,
                         ),
                       ),
                       SizedBox(width: 16),
                       Expanded(
                         child: SelectButton(
                           onPressed: () {
-                            setState(() {
-                              _selectedColor = 'black';
-                            });
+                            ref
+                                .read(gameProvider.notifier)
+                                .setColor(Side.black);
                           },
                           isWhite: false,
-                          isSelected: _selectedColor == 'black',
+                          isSelected: playingAs == Side.black,
                         ),
                       ),
                     ],

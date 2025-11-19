@@ -15,6 +15,7 @@ class StorageService {
 
   Side loadColor() {
     final index = _prefs.getInt('Color') ?? 0;
+
     return Side.values[index];
   }
 

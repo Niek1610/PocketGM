@@ -5,6 +5,7 @@ import 'package:pocketgm/services/storage_service.dart';
 import 'package:pocketgm/theme/app_theme.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await StorageService().init();
   runApp(const ProviderScope(child: MainApp()));
 }
