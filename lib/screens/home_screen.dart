@@ -60,7 +60,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Expanded(
                     child: SelectButton(
-                      text: "White",
                       onPressed: () {
                         setState(() {
                           _selectedColor = 'white';
@@ -73,7 +72,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   SizedBox(width: 16),
                   Expanded(
                     child: SelectButton(
-                      text: "Black",
                       onPressed: () {
                         setState(() {
                           _selectedColor = 'black';

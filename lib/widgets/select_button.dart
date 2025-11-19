@@ -5,7 +5,7 @@ import 'package:pocketgm/constants/colors..dart';
 
 class SelectButton extends StatelessWidget {
   final VoidCallback onPressed;
-  final String text;
+  final String? text;
   final double width;
   final double height;
   final bool isWhite;
@@ -14,7 +14,7 @@ class SelectButton extends StatelessWidget {
   const SelectButton({
     super.key,
     required this.onPressed,
-    required this.text,
+    this.text,
     this.width = double.infinity,
     this.height = 60,
     this.isWhite = true,
@@ -38,20 +38,46 @@ class SelectButton extends StatelessWidget {
                 ? BorderSide(
                     color: isWhite
                         ? const Color.fromARGB(255, 167, 167, 167)
-                        : const Color.fromARGB(255, 0, 0, 0),
+                        : const Color.fromARGB(255, 26, 26, 26),
                     width: 3,
                   )
                 : BorderSide.none,
           ),
         ),
         onPressed: onPressed,
-        child: Text(
-          text,
-          style: Theme.of(context).textTheme.labelLarge!.copyWith(
-            color: isWhite ? black : white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        child: text != null
+            ? Text(
+                text!,
+                style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                  color: isWhite ? black : white,
+                  fontWeight: FontWeight.bold,
+                ),
+              )
+            : Text(
+                String.fromCharCode(0x265A),
+                style: TextStyle(
+                  fontSize: 40,
+                  color: isWhite ? white : black,
+                  shadows: [
+                    Shadow(
+                      offset: const Offset(-1.5, -1.5),
+                      color: isWhite ? black : white,
+                    ),
+                    Shadow(
+                      offset: const Offset(1.5, -1.5),
+                      color: isWhite ? black : white,
+                    ),
+                    Shadow(
+                      offset: const Offset(1.5, 1.5),
+                      color: isWhite ? black : white,
+                    ),
+                    Shadow(
+                      offset: const Offset(-1.5, 1.5),
+                      color: isWhite ? black : white,
+                    ),
+                  ],
+                ),
+              ),
       ),
     );
   }
