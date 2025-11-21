@@ -2,6 +2,8 @@ import 'package:dartchess/dartchess.dart';
 import 'package:flutter/foundation.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:pocketgm/models/input_mode.dart';
+import 'package:pocketgm/providers/settings_provider.dart';
 import 'package:pocketgm/services/engine/stockfish.dart';
 import 'package:pocketgm/services/storage_service.dart';
 
@@ -10,19 +12,15 @@ class GameProvider extends ChangeNotifier {
   List<Move> _moveHistory = [];
   Move? _lastMove;
   Side _playingAs = Side.white;
-
+  InputMode _inputMode = InputMode.quickPlay;
   final stockfishService = StockfishService();
 
-  GameProvider() {
-    _initialize();
-  }
+  final SettingsProvider _settings;
 
-  Future<void> _initialize() async {
-    await _loadSettings();
-  }
+  GameProvider(this._settings);
 
   void onStockfishReady() {
-    getBestMove();
+    _getAndPlayBestMove();
   }
 
   String get fen => _position.fen;
@@ -30,17 +28,23 @@ class GameProvider extends ChangeNotifier {
   Side get playingAs => _playingAs;
   List<Move> get moveHistory => List.unmodifiable(_moveHistory);
   Move? get lastMove => _lastMove;
+  InputMode get inputMode => _inputMode;
 
   Future<String?> getBestMoveUCI() async {
     return await stockfishService.getBestMove(fen);
   }
 
-  Future<void> getBestMove() async {
-    final bestMove = await getBestMoveUCI();
+  Future<void> sendUserFeedback() async {}
 
+  Future<void> getUserInput() async {}
+
+  Future<void> _getAndPlayBestMove() async {
+    final bestMove = await getBestMoveUCI();
     if (bestMove != null) {
+      //split de move op naar "from" en "to"
       final from = bestMove.substring(0, 2);
       final to = bestMove.substring(2, 4);
+
       if (_playingAs == Side.white && sideToMove == Side.white) {
         makeMove(from, to);
       } else if (_playingAs == Side.black && sideToMove == Side.black) {
@@ -78,7 +82,6 @@ class GameProvider extends ChangeNotifier {
       _moveHistory.add(move);
       _lastMove = move;
 
-      getBestMove();
       notifyListeners();
       return true;
     } catch (e) {
@@ -121,10 +124,6 @@ class GameProvider extends ChangeNotifier {
     await StorageService().saveColor(color);
   }
 
-  Future<void> _loadSettings() async {
-    _playingAs = StorageService().loadColor();
-  }
-
   @override
   void dispose() {
     // Don't dispose Stockfish here since it's a singleton
@@ -132,4 +131,7 @@ class GameProvider extends ChangeNotifier {
   }
 }
 
-final gameProvider = ChangeNotifierProvider((ref) => GameProvider());
+final gameProvider = ChangeNotifierProvider((ref) {
+  final settings = ref.watch(settingsProvider);
+  return GameProvider(settings);
+});

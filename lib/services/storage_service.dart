@@ -1,4 +1,5 @@
 import 'package:dartchess/dartchess.dart';
+import 'package:pocketgm/models/input_mode.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StorageService {
@@ -21,5 +22,14 @@ class StorageService {
 
   Future<void> saveColor(Side color) async {
     await _prefs.setInt('color', color.index);
+  }
+
+  Future<void> saveInputMode(InputMode mode) async {
+    await _prefs.setInt('input_mode', mode.index);
+  }
+
+  InputMode loadInputMode() {
+    final index = _prefs.getInt('input_mode') ?? 0;
+    return InputMode.values[index];
   }
 }
