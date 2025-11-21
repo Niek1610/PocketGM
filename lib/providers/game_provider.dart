@@ -32,9 +32,7 @@ class GameProvider extends ChangeNotifier {
     return await stockfishService.getBestMove(fen);
   }
 
-  Future<void> makeStockfishMove() async {
-    getBestMoveUCI();
-  }
+  Future<void> getBestMove() async {}
 
   IMapOfSets<String, String> get validMoves {
     final Map<String, Set<String>> moves = {};
@@ -64,8 +62,6 @@ class GameProvider extends ChangeNotifier {
 
       _moveHistory.add(move);
       _lastMove = move;
-
-      makeStockfishMove();
 
       notifyListeners();
       return true;

@@ -74,7 +74,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
               SizedBox(height: 16),
               Chessboard(
                 settings: ChessboardSettings(
-                  pieceShiftMethod: PieceShiftMethod.tapTwoSquares,
+                  pieceShiftMethod: PieceShiftMethod.either,
                 ),
                 size: screenWidth,
                 orientation: gameState.playingAs,

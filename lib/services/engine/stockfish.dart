@@ -53,7 +53,7 @@ class StockfishService {
         DateTime.now().difference(start) < timeout) {
       await Future.delayed(Duration(milliseconds: 100));
     }
-
+    print(_lastBestMove);
     return _lastBestMove;
   }
 
