@@ -2,6 +2,7 @@ import 'package:dartchess/dartchess.dart';
 import 'package:flutter/foundation.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:pocketgm/services/engine/stockfish.dart';
 import 'package:pocketgm/services/storage_service.dart';
 
 class GameProvider extends ChangeNotifier {
@@ -10,8 +11,15 @@ class GameProvider extends ChangeNotifier {
   Move? _lastMove;
   Side _playingAs = Side.white;
 
+  final stockfishService = StockfishService();
+
   GameProvider() {
     _loadSettings();
+    _initStockfish();
+  }
+
+  Future<void> _initStockfish() async {
+    await stockfishService.init();
   }
 
   String get fen => _position.fen;
@@ -19,6 +27,14 @@ class GameProvider extends ChangeNotifier {
   Side get playingAs => _playingAs;
   List<Move> get moveHistory => List.unmodifiable(_moveHistory);
   Move? get lastMove => _lastMove;
+
+  Future<String?> getBestMoveUCI() async {
+    return await stockfishService.getBestMove(fen);
+  }
+
+  Future<void> makeStockfishMove() async {
+    getBestMoveUCI();
+  }
 
   IMapOfSets<String, String> get validMoves {
     final Map<String, Set<String>> moves = {};
@@ -48,6 +64,8 @@ class GameProvider extends ChangeNotifier {
 
       _moveHistory.add(move);
       _lastMove = move;
+
+      makeStockfishMove();
 
       notifyListeners();
       return true;
@@ -91,7 +109,8 @@ class GameProvider extends ChangeNotifier {
     await StorageService().saveColor(color);
   }
 
-  void _loadSettings() {
+  Future<void> _loadSettings() async {
+    await stockfishService.init();
     _playingAs = StorageService().loadColor();
   }
 }

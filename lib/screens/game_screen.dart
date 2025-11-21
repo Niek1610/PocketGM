@@ -64,7 +64,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                   padding: const EdgeInsets.all(4.0),
                   child: Text(
                     textAlign: TextAlign.center,
-                    "${gameState.lastMove}",
+                    gameState.lastMove.toString(),
                     style: Theme.of(
                       context,
                     ).textTheme.labelSmall!.copyWith(color: white),
