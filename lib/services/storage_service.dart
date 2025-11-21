@@ -24,12 +24,12 @@ class StorageService {
     await _prefs.setInt('color', color.index);
   }
 
-  Future<void> saveInputMode(InputMode mode) async {
+  Future<void> saveInputLogMode(InputLogMode mode) async {
     await _prefs.setInt('input_mode', mode.index);
   }
 
-  InputMode loadInputMode() {
+  InputLogMode loadInputLogMode() {
     final index = _prefs.getInt('input_mode') ?? 0;
-    return InputMode.values[index];
+    return InputLogMode.values[index];
   }
 }

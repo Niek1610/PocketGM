@@ -28,28 +28,28 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
           ),
 
-          RadioListTile<InputMode>(
+          RadioListTile<InputLogMode>(
             title: Text('Quick-Mode'),
             subtitle: Text(
               'Only log opponent moves (assumes you follow suggestions)',
             ),
-            value: InputMode.quickMode,
-            groupValue: settings.inputMode,
+            value: InputLogMode.quickMode,
+            groupValue: settings.inputLogMode,
             onChanged: (mode) {
               if (mode != null) {
-                ref.read(settingsProvider.notifier).setInputMode(mode);
+                ref.read(settingsProvider.notifier).setInputLogMode(mode);
               }
             },
           ),
 
-          RadioListTile<InputMode>(
+          RadioListTile<InputLogMode>(
             title: Text('Full-Mode'),
             subtitle: Text('Log both your moves and opponent moves'),
-            value: InputMode.fullMode,
-            groupValue: settings.inputMode,
+            value: InputLogMode.fullMode,
+            groupValue: settings.inputLogMode,
             onChanged: (mode) {
               if (mode != null) {
-                ref.read(settingsProvider.notifier).setInputMode(mode);
+                ref.read(settingsProvider.notifier).setInputLogMode(mode);
               }
             },
           ),

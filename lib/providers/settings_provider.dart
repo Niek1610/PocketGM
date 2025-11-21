@@ -7,14 +7,14 @@ import 'package:pocketgm/services/storage_service.dart';
 
 class SettingsProvider extends ChangeNotifier {
   Side _playingAs = Side.white;
-  InputMode _inputMode = InputMode.quickMode;
+  InputLogMode _inputLogMode = InputLogMode.quickMode;
 
   SettingsProvider() {
     _loadSettings();
   }
 
   Side get playingAs => _playingAs;
-  InputMode get inputMode => _inputMode;
+  InputLogMode get inputLogMode => _inputLogMode;
 
   Future<void> setPlayingAs(Side color) async {
     _playingAs = color;
@@ -22,15 +22,15 @@ class SettingsProvider extends ChangeNotifier {
     await StorageService().saveColor(color);
   }
 
-  Future<void> setInputMode(InputMode mode) async {
-    _inputMode = mode;
+  Future<void> setInputLogMode(InputLogMode mode) async {
+    _inputLogMode = mode;
     notifyListeners();
-    await StorageService().saveInputMode(mode);
+    await StorageService().saveInputLogMode(mode);
   }
 
   Future<void> _loadSettings() async {
     _playingAs = StorageService().loadColor();
-    _inputMode = StorageService().loadInputMode();
+    _inputLogMode = StorageService().loadInputLogMode();
     notifyListeners();
   }
 }

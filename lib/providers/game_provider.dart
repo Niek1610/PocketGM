@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:pocketgm/models/input_mode.dart';
+
 import 'package:pocketgm/providers/settings_provider.dart';
 import 'package:pocketgm/services/engine/stockfish.dart';
 import 'package:pocketgm/services/storage_service.dart';
@@ -12,7 +13,7 @@ class GameProvider extends ChangeNotifier {
   List<Move> _moveHistory = [];
   Move? _lastMove;
   Side _playingAs = Side.white;
-  final InputMode _inputMode = InputMode.quickMode;
+  final InputLogMode _inputLogMode = InputLogMode.quickMode;
   final stockfishService = StockfishService();
 
   final SettingsProvider _settings;
@@ -20,7 +21,7 @@ class GameProvider extends ChangeNotifier {
   GameProvider(this._settings);
 
   void onStockfishReady() {
-    if (_settings.inputMode == InputMode.quickMode &&
+    if (_settings.inputLogMode == InputLogMode.quickMode &&
         _settings.playingAs == Side.white) {
       _getAndPlayBestMove();
     }
@@ -31,7 +32,7 @@ class GameProvider extends ChangeNotifier {
   Side get playingAs => _playingAs;
   List<Move> get moveHistory => List.unmodifiable(_moveHistory);
   Move? get lastMove => _lastMove;
-  InputMode get inputMode => _inputMode;
+  InputLogMode get inputLogMode => _inputLogMode;
 
   Future<String?> getBestMoveUCI() async {
     return await stockfishService.getBestMove(fen);
