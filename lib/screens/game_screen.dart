@@ -5,6 +5,7 @@ import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pocketgm/constants/colors..dart';
 import 'package:pocketgm/providers/game_provider.dart';
+import 'package:pocketgm/services/engine/stockfish.dart';
 import 'package:pocketgm/widgets/app_scaffold.dart';
 import 'package:chessground/chessground.dart';
 import 'package:pocketgm/widgets/primary_button.dart';
@@ -17,6 +18,19 @@ class GameScreen extends ConsumerStatefulWidget {
 }
 
 class _GameScreenState extends ConsumerState<GameScreen> {
+  final stockfishService = StockfishService();
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeStockfish();
+  }
+
+  Future<void> _initializeStockfish() async {
+    await stockfishService.init();
+    ref.read(gameProvider).onStockfishReady();
+  }
+
   @override
   Widget build(BuildContext context) {
     final gameState = ref.watch(gameProvider);
@@ -80,11 +94,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                 orientation: gameState.playingAs,
                 fen: gameState.fen,
                 game: GameData(
-                  playerSide: gameState.sideToMove == gameState.playingAs
-                      ? (gameState.playingAs == Side.white
-                            ? PlayerSide.white
-                            : PlayerSide.black)
-                      : PlayerSide.none,
+                  playerSide: PlayerSide.both,
                   sideToMove: gameState.sideToMove,
                   validMoves: ValidMoves(
                     gameState.validMoves.unlock.map(

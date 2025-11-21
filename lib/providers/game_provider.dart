@@ -14,12 +14,15 @@ class GameProvider extends ChangeNotifier {
   final stockfishService = StockfishService();
 
   GameProvider() {
-    _loadSettings();
-    _initStockfish();
+    _initialize();
   }
 
-  Future<void> _initStockfish() async {
-    await stockfishService.init();
+  Future<void> _initialize() async {
+    await _loadSettings();
+  }
+
+  void onStockfishReady() {
+    getBestMove();
   }
 
   String get fen => _position.fen;
@@ -32,7 +35,19 @@ class GameProvider extends ChangeNotifier {
     return await stockfishService.getBestMove(fen);
   }
 
-  Future<void> getBestMove() async {}
+  Future<void> getBestMove() async {
+    final bestMove = await getBestMoveUCI();
+
+    if (bestMove != null) {
+      final from = bestMove.substring(0, 2);
+      final to = bestMove.substring(2, 4);
+      if (_playingAs == Side.white && sideToMove == Side.white) {
+        makeMove(from, to);
+      } else if (_playingAs == Side.black && sideToMove == Side.black) {
+        makeMove(from, to);
+      }
+    }
+  }
 
   IMapOfSets<String, String> get validMoves {
     final Map<String, Set<String>> moves = {};
@@ -63,6 +78,7 @@ class GameProvider extends ChangeNotifier {
       _moveHistory.add(move);
       _lastMove = move;
 
+      getBestMove();
       notifyListeners();
       return true;
     } catch (e) {

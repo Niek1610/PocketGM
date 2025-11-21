@@ -12,10 +12,10 @@ class StockfishService {
   Stockfish? stockfish;
   //laatste beste zet
   String? _lastBestMove;
-  bool _isInitialized = false;
+  bool isStockfishInitialized = false;
 
   Future<void> init() async {
-    if (_isInitialized) return;
+    if (isStockfishInitialized) return;
     stockfish = Stockfish();
     //wachten op stockfish
     while (stockfish!.state.value != StockfishState.ready) {
@@ -33,7 +33,7 @@ class StockfishService {
 
     stockfish!.stdin = 'uci';
     stockfish!.stdin = 'isready';
-    _isInitialized = true;
+    isStockfishInitialized = true;
   }
 
   Future<String?> getBestMove(String fen) async {
@@ -58,10 +58,10 @@ class StockfishService {
   }
 
   void dispose() {
-    if (stockfish != null && _isInitialized) {
+    if (stockfish != null && isStockfishInitialized) {
       stockfish!.dispose();
       stockfish = null;
-      _isInitialized = false;
+      isStockfishInitialized = false;
     }
   }
 }
