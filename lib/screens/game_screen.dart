@@ -157,7 +157,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Mode", style: TextStyle(color: white)),
+                        Text("InputMode", style: TextStyle(color: white)),
                         Text("Connectivity", style: TextStyle(color: white)),
                       ],
                     ),

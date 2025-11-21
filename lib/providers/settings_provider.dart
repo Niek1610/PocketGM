@@ -7,7 +7,7 @@ import 'package:pocketgm/services/storage_service.dart';
 
 class SettingsProvider extends ChangeNotifier {
   Side _playingAs = Side.white;
-  InputMode _inputMode = InputMode.quickPlay;
+  InputMode _inputMode = InputMode.quickMode;
 
   SettingsProvider() {
     _loadSettings();

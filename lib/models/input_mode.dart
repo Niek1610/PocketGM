@@ -1,1 +1,1 @@
-enum InputMode { quickPlay, manual }
+enum InputMode { quickMode, fullMode }

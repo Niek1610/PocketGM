@@ -12,7 +12,7 @@ class GameProvider extends ChangeNotifier {
   List<Move> _moveHistory = [];
   Move? _lastMove;
   Side _playingAs = Side.white;
-  InputMode _inputMode = InputMode.quickPlay;
+  final InputMode _inputMode = InputMode.quickMode;
   final stockfishService = StockfishService();
 
   final SettingsProvider _settings;
@@ -20,7 +20,10 @@ class GameProvider extends ChangeNotifier {
   GameProvider(this._settings);
 
   void onStockfishReady() {
-    _getAndPlayBestMove();
+    if (_settings.inputMode == InputMode.quickMode &&
+        _settings.playingAs == Side.white) {
+      _getAndPlayBestMove();
+    }
   }
 
   String get fen => _position.fen;
