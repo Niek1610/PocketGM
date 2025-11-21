@@ -3,12 +3,19 @@ import 'dart:async';
 import 'package:stockfish/stockfish.dart';
 
 class StockfishService {
+  // Singleton pattern
+  static final StockfishService _instance = StockfishService._internal();
+  factory StockfishService() => _instance;
+  StockfishService._internal();
+
   //stockfish init
   Stockfish? stockfish;
   //laatste beste zet
   String? _lastBestMove;
+  bool _isInitialized = false;
 
   Future<void> init() async {
+    if (_isInitialized) return;
     stockfish = Stockfish();
     //wachten op stockfish
     while (stockfish!.state.value != StockfishState.ready) {
@@ -26,6 +33,7 @@ class StockfishService {
 
     stockfish!.stdin = 'uci';
     stockfish!.stdin = 'isready';
+    _isInitialized = true;
   }
 
   Future<String?> getBestMove(String fen) async {
@@ -50,6 +58,10 @@ class StockfishService {
   }
 
   void dispose() {
-    stockfish!.dispose();
+    if (stockfish != null && _isInitialized) {
+      stockfish!.dispose();
+      stockfish = null;
+      _isInitialized = false;
+    }
   }
 }

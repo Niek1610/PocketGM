@@ -110,8 +110,13 @@ class GameProvider extends ChangeNotifier {
   }
 
   Future<void> _loadSettings() async {
-    await stockfishService.init();
     _playingAs = StorageService().loadColor();
+  }
+
+  @override
+  void dispose() {
+    // Don't dispose Stockfish here since it's a singleton
+    super.dispose();
   }
 }
 
