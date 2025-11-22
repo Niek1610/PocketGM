@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:pocketgm/constants/colors..dart';
 import 'package:pocketgm/models/input_mode.dart';
 import 'package:pocketgm/providers/game_provider.dart';
+import 'package:pocketgm/services/input/interface_input_provider.dart';
 import 'package:pocketgm/providers/settings_provider.dart';
 import 'package:pocketgm/services/engine/stockfish.dart';
 import 'package:pocketgm/widgets/app_scaffold.dart';
@@ -37,6 +38,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
   Widget build(BuildContext context) {
     final gameState = ref.watch(gameProvider);
     final settings = ref.watch(settingsProvider);
+    final interfaceInput = ref.watch(interfaceInputProvider);
     final double screenWidth = MediaQuery.of(context).size.width;
     final inputMode = settings.inputMode;
 
@@ -68,7 +70,9 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                   padding: const EdgeInsets.all(4.0),
                   child: Text(
                     textAlign: TextAlign.center,
-                    "input",
+                    inputMode == InputMode.interfaceMode
+                        ? interfaceInput.displayText
+                        : "input",
                     style: Theme.of(
                       context,
                     ).textTheme.labelSmall!.copyWith(color: white),
@@ -190,7 +194,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                       ],
                     ),
                     SizedBox(height: 16),
-                    ..._buildInstructionsSection(inputMode),
+                    ..._buildInstructionsSection(inputMode, ref),
                   ],
                 ),
               );
@@ -201,7 +205,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
     );
   }
 
-  List<Widget> _buildInstructionsSection(InputMode mode) {
+  List<Widget> _buildInstructionsSection(InputMode mode, WidgetRef ref) {
     switch (mode) {
       case InputMode.bleMode:
         return [
@@ -249,10 +253,22 @@ class _GameScreenState extends ConsumerState<GameScreen> {
             spacing: 8,
             children: [
               Expanded(
-                child: PrimaryButton(onPressed: () {}, text: "−"),
+                child: PrimaryButton(
+                  onPressed: () {
+                    ref.read(interfaceInputProvider.notifier).increment();
+                  },
+                  text: "Increment",
+                  icon: Icons.add,
+                ),
               ),
               Expanded(
-                child: PrimaryButton(onPressed: () {}, text: "+"),
+                child: PrimaryButton(
+                  onPressed: () {
+                    ref.read(interfaceInputProvider.notifier).confirm();
+                  },
+                  text: "Confirm",
+                  icon: Icons.check,
+                ),
               ),
             ],
           ),
