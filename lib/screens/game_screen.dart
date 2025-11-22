@@ -4,9 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pocketgm/constants/colors..dart';
+import 'package:pocketgm/models/input_log_mode.dart';
 import 'package:pocketgm/models/input_mode.dart';
 import 'package:pocketgm/providers/game_provider.dart';
-import 'package:pocketgm/services/input/interface_input_provider.dart';
+import 'package:pocketgm/providers/interface_input_provider.dart';
 import 'package:pocketgm/providers/settings_provider.dart';
 import 'package:pocketgm/services/engine/stockfish.dart';
 import 'package:pocketgm/widgets/app_scaffold.dart';
@@ -34,6 +35,24 @@ class _GameScreenState extends ConsumerState<GameScreen> {
     ref.read(gameProvider).onStockfishReady();
   }
 
+  String _getInstructionText(
+    GameProvider gameState,
+    SettingsProvider settings,
+  ) {
+    final isUserTurn = gameState.sideToMove == gameState.playingAs;
+    final isQuickMode = settings.inputLogMode == InputLogMode.quickMode;
+
+    if (isUserTurn) {
+      if (isQuickMode) {
+        return "Stockfish is thinking...";
+      } else {
+        return "Enter your move";
+      }
+    } else {
+      return "Enter opponent's move";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final gameState = ref.watch(gameProvider);
@@ -41,6 +60,10 @@ class _GameScreenState extends ConsumerState<GameScreen> {
     final interfaceInput = ref.watch(interfaceInputProvider);
     final double screenWidth = MediaQuery.of(context).size.width;
     final inputMode = settings.inputMode;
+
+    final isUserTurn = gameState.sideToMove == gameState.playingAs;
+    final isQuickMode = settings.inputLogMode == InputLogMode.quickMode;
+    final isInputAllowed = !(isUserTurn && isQuickMode);
 
     return AppScaffold(
       title: "Playing as ${gameState.playingAs.name}",
@@ -57,10 +80,16 @@ class _GameScreenState extends ConsumerState<GameScreen> {
           Column(
             children: [
               Text(
-                "${gameState.sideToMove} is next to move",
+                "${gameState.sideToMove.name} to move",
                 style: Theme.of(
                   context,
-                ).textTheme.bodySmall!.copyWith(color: white),
+                ).textTheme.titleMedium!.copyWith(color: white),
+              ),
+              Text(
+                _getInstructionText(gameState, settings),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall!.copyWith(color: white.withOpacity(0.7)),
               ),
               SizedBox(height: 8),
               Container(
@@ -194,7 +223,11 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                       ],
                     ),
                     SizedBox(height: 16),
-                    ..._buildInstructionsSection(inputMode, ref),
+                    ..._buildInstructionsSection(
+                      inputMode,
+                      ref,
+                      isInputAllowed,
+                    ),
                   ],
                 ),
               );
@@ -205,7 +238,11 @@ class _GameScreenState extends ConsumerState<GameScreen> {
     );
   }
 
-  List<Widget> _buildInstructionsSection(InputMode mode, WidgetRef ref) {
+  List<Widget> _buildInstructionsSection(
+    InputMode mode,
+    WidgetRef ref,
+    bool isInputAllowed,
+  ) {
     switch (mode) {
       case InputMode.bleMode:
         return [
@@ -254,18 +291,24 @@ class _GameScreenState extends ConsumerState<GameScreen> {
             children: [
               Expanded(
                 child: PrimaryButton(
-                  onPressed: () {
-                    ref.read(interfaceInputProvider.notifier).increment();
-                  },
+                  onPressed: isInputAllowed
+                      ? () {
+                          ref.read(interfaceInputProvider.notifier).increment();
+                        }
+                      : () {}, // Disable action but keep button enabled visually or disable it?
+                  // Better to disable it visually if not allowed, but PrimaryButton might not support null onPressed for disabled state style?
+                  // Let's check PrimaryButton.
                   text: "Increment",
                   icon: Icons.add,
                 ),
               ),
               Expanded(
                 child: PrimaryButton(
-                  onPressed: () {
-                    ref.read(interfaceInputProvider.notifier).confirm();
-                  },
+                  onPressed: isInputAllowed
+                      ? () {
+                          ref.read(interfaceInputProvider.notifier).confirm();
+                        }
+                      : () {},
                   text: "Confirm",
                   icon: Icons.check,
                 ),

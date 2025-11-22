@@ -6,14 +6,12 @@ import 'package:pocketgm/models/input_log_mode.dart';
 
 import 'package:pocketgm/providers/settings_provider.dart';
 import 'package:pocketgm/services/engine/stockfish.dart';
-import 'package:pocketgm/services/storage_service.dart';
 
 class GameProvider extends ChangeNotifier {
   Position _position = Chess.initial;
   List<Move> _moveHistory = [];
   Move? _lastMove;
-  Side _playingAs = Side.white;
-  final InputLogMode _inputLogMode = InputLogMode.quickMode;
+
   final stockfishService = StockfishService();
 
   final SettingsProvider _settings;
@@ -22,17 +20,18 @@ class GameProvider extends ChangeNotifier {
 
   void onStockfishReady() {
     if (_settings.inputLogMode == InputLogMode.quickMode &&
-        _settings.playingAs == Side.white) {
+        _settings.playingAs == Side.white &&
+        _position.turn == Side.white) {
       _getAndPlayBestMove();
     }
   }
 
   String get fen => _position.fen;
   Side get sideToMove => _position.turn;
-  Side get playingAs => _playingAs;
+  Side get playingAs => _settings.playingAs;
   List<Move> get moveHistory => List.unmodifiable(_moveHistory);
   Move? get lastMove => _lastMove;
-  InputLogMode get inputLogMode => _inputLogMode;
+  InputLogMode get inputLogMode => _settings.inputLogMode;
 
   Future<String?> getBestMoveUCI() async {
     return await stockfishService.getBestMove(fen);
@@ -49,11 +48,7 @@ class GameProvider extends ChangeNotifier {
       final from = bestMove.substring(0, 2);
       final to = bestMove.substring(2, 4);
 
-      if (_playingAs == Side.white && sideToMove == Side.white) {
-        makeMove(from, to);
-      } else if (_playingAs == Side.black && sideToMove == Side.black) {
-        makeMove(from, to);
-      }
+      makeMove(from, to);
     }
   }
 
@@ -87,6 +82,13 @@ class GameProvider extends ChangeNotifier {
       _lastMove = move;
 
       notifyListeners();
+
+      if (_settings.inputLogMode == InputLogMode.quickMode &&
+          _position.turn == _settings.playingAs &&
+          !_position.isGameOver) {
+        _getAndPlayBestMove();
+      }
+
       return true;
     } catch (e) {
       if (kDebugMode) {
@@ -122,10 +124,8 @@ class GameProvider extends ChangeNotifier {
   }
 
   Future<void> setPlayingAs(Side color) async {
-    _playingAs = color;
+    await _settings.setPlayingAs(color);
     notifyListeners();
-
-    await StorageService().saveColor(color);
   }
 
   @override
