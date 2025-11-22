@@ -4,7 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pocketgm/constants/colors..dart';
+import 'package:pocketgm/models/input_mode.dart';
 import 'package:pocketgm/providers/game_provider.dart';
+import 'package:pocketgm/providers/settings_provider.dart';
 import 'package:pocketgm/services/engine/stockfish.dart';
 import 'package:pocketgm/widgets/app_scaffold.dart';
 import 'package:chessground/chessground.dart';
@@ -34,7 +36,9 @@ class _GameScreenState extends ConsumerState<GameScreen> {
   @override
   Widget build(BuildContext context) {
     final gameState = ref.watch(gameProvider);
+    final settings = ref.watch(settingsProvider);
     final double screenWidth = MediaQuery.of(context).size.width;
+    final inputMode = settings.inputMode;
 
     return AppScaffold(
       title: "Playing as ${gameState.playingAs.name}",
@@ -94,7 +98,9 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                 orientation: gameState.playingAs,
                 fen: gameState.fen,
                 game: GameData(
-                  playerSide: PlayerSide.both,
+                  playerSide: inputMode == InputMode.interfaceMode
+                      ? PlayerSide.both
+                      : PlayerSide.none,
                   sideToMove: gameState.sideToMove,
                   validMoves: ValidMoves(
                     gameState.validMoves.unlock.map(
@@ -157,12 +163,34 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("InputMode", style: TextStyle(color: white)),
-                        Text("Connectivity", style: TextStyle(color: white)),
+                        DropdownButton<InputMode>(
+                          value: inputMode,
+                          dropdownColor: const Color.fromARGB(255, 42, 29, 54),
+                          style: TextStyle(color: white),
+                          items: [
+                            DropdownMenuItem(
+                              value: InputMode.bleMode,
+                              child: Text("PocketGM"),
+                            ),
+                            DropdownMenuItem(
+                              value: InputMode.standaloneMode,
+                              child: Text("Standalone"),
+                            ),
+                            DropdownMenuItem(
+                              value: InputMode.interfaceMode,
+                              child: Text("Interface"),
+                            ),
+                          ],
+                          onChanged: (value) {
+                            ref
+                                .read(settingsProvider.notifier)
+                                .setInputMode(value!);
+                          },
+                        ),
                       ],
                     ),
                     SizedBox(height: 16),
-                    Text("Instructions", style: TextStyle(color: white)),
+                    ..._buildInstructionsSection(inputMode),
                   ],
                 ),
               );
@@ -171,5 +199,64 @@ class _GameScreenState extends ConsumerState<GameScreen> {
         ],
       ),
     );
+  }
+
+  List<Widget> _buildInstructionsSection(InputMode mode) {
+    switch (mode) {
+      case InputMode.bleMode:
+        return [
+          Text(
+            "Instructions",
+            style: TextStyle(color: white, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 8),
+          Text(
+            "Connect your PocketGM device via Bluetooth. The device will count columns (a-h) and rows (1-8) to input moves.",
+            style: TextStyle(color: white),
+          ),
+          SizedBox(height: 16),
+          PrimaryButton(onPressed: () {}, text: "Connect device"),
+          SizedBox(height: 8),
+        ];
+
+      case InputMode.standaloneMode:
+        return [
+          Text(
+            "Instructions",
+            style: TextStyle(color: white, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 8),
+          Text(
+            "Use your device's volume buttons to count columns (a-h) and rows (1-8) to input moves.",
+            style: TextStyle(color: white),
+          ),
+          SizedBox(height: 12),
+        ];
+
+      case InputMode.interfaceMode:
+        return [
+          Text(
+            "Instructions",
+            style: TextStyle(color: white, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 8),
+          Text(
+            "Use the buttons below to count columns (a-h) and rows (1-8) to input moves manually.",
+            style: TextStyle(color: white),
+          ),
+          SizedBox(height: 16),
+          Row(
+            spacing: 8,
+            children: [
+              Expanded(
+                child: PrimaryButton(onPressed: () {}, text: "−"),
+              ),
+              Expanded(
+                child: PrimaryButton(onPressed: () {}, text: "+"),
+              ),
+            ],
+          ),
+        ];
+    }
   }
 }

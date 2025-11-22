@@ -2,7 +2,7 @@ import 'package:dartchess/dartchess.dart';
 import 'package:flutter/foundation.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter_riverpod/legacy.dart';
-import 'package:pocketgm/models/input_mode.dart';
+import 'package:pocketgm/models/input_log_mode.dart';
 
 import 'package:pocketgm/providers/settings_provider.dart';
 import 'package:pocketgm/services/engine/stockfish.dart';
@@ -136,6 +136,6 @@ class GameProvider extends ChangeNotifier {
 }
 
 final gameProvider = ChangeNotifierProvider((ref) {
-  final settings = ref.watch(settingsProvider);
+  final settings = ref.read(settingsProvider);
   return GameProvider(settings);
 });

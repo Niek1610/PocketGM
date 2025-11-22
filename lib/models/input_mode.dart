@@ -1,1 +1,1 @@
-enum InputLogMode { quickMode, fullMode }
+enum InputMode { bleMode, standaloneMode, interfaceMode }

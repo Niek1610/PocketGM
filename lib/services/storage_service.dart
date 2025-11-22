@@ -1,4 +1,5 @@
 import 'package:dartchess/dartchess.dart';
+import 'package:pocketgm/models/input_log_mode.dart';
 import 'package:pocketgm/models/input_mode.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -25,11 +26,20 @@ class StorageService {
   }
 
   Future<void> saveInputLogMode(InputLogMode mode) async {
-    await _prefs.setInt('input_mode', mode.index);
+    await _prefs.setInt('input_log_mode', mode.index);
   }
 
   InputLogMode loadInputLogMode() {
-    final index = _prefs.getInt('input_mode') ?? 0;
+    final index = _prefs.getInt('input_log_mode') ?? 0;
     return InputLogMode.values[index];
+  }
+
+  Future<void> saveInputMode(InputMode mode) async {
+    await _prefs.setInt('input_mode', mode.index);
+  }
+
+  InputMode loadInputMode() {
+    final index = _prefs.getInt('input_mode') ?? 0;
+    return InputMode.values[index];
   }
 }
