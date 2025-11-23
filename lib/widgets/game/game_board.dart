@@ -3,7 +3,6 @@ import 'package:dartchess/dartchess.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pocketgm/models/input_mode.dart';
 import 'package:pocketgm/providers/game_provider.dart';
 import 'package:pocketgm/providers/settings_provider.dart';
 
@@ -27,7 +26,7 @@ class GameBoard extends ConsumerWidget {
           orientation: gameState.playingAs,
           fen: gameState.fen,
           game: GameData(
-            playerSide: settings.inputMode == InputMode.interfaceMode
+            playerSide: settings.allowTouchInput
                 ? PlayerSide.both
                 : PlayerSide.none,
             sideToMove: gameState.sideToMove,

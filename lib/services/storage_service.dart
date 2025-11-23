@@ -97,4 +97,12 @@ class StorageService {
     }
     return PromotionChoice.values[index];
   }
+
+  Future<void> saveAllowTouchInput(bool value) async {
+    await _prefs.setBool('allow_touch_input', value);
+  }
+
+  bool loadAllowTouchInput() {
+    return _prefs.getBool('allow_touch_input') ?? true;
+  }
 }

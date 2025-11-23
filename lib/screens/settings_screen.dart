@@ -240,6 +240,23 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 onChanged: (mode) =>
                     ref.read(settingsProvider.notifier).setInputMode(mode!),
               ),
+              _buildDivider(),
+              SwitchListTile(
+                activeColor: white,
+                activeTrackColor: buttonColor,
+                title: const Text(
+                  'Allow Board Touch Input',
+                  style: TextStyle(color: white, fontWeight: FontWeight.w600),
+                ),
+                subtitle: const Text(
+                  'Enable moving pieces by dragging on the board',
+                  style: TextStyle(color: Colors.white70, fontSize: 12),
+                ),
+                value: settings.allowTouchInput,
+                onChanged: (value) {
+                  ref.read(settingsProvider.notifier).setAllowTouchInput(value);
+                },
+              ),
             ],
           ),
           const SizedBox(height: 24),

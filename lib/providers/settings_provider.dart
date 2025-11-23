@@ -17,6 +17,7 @@ class SettingsProvider extends ChangeNotifier {
   VibrationSpeed _vibrationSpeed = VibrationSpeed.normal;
   int _stockfishDepth = 15;
   PromotionChoice _promotionChoice = PromotionChoice.queen;
+  bool _allowTouchInput = true;
 
   SettingsProvider() {
     _loadSettings();
@@ -30,6 +31,7 @@ class SettingsProvider extends ChangeNotifier {
   VibrationSpeed get vibrationSpeed => _vibrationSpeed;
   int get stockfishDepth => _stockfishDepth;
   PromotionChoice get promotionChoice => _promotionChoice;
+  bool get allowTouchInput => _allowTouchInput;
 
   Future<void> setPlayingAs(Side color) async {
     _playingAs = color;
@@ -79,6 +81,12 @@ class SettingsProvider extends ChangeNotifier {
     await StorageService().savePromotionChoice(choice);
   }
 
+  Future<void> setAllowTouchInput(bool value) async {
+    _allowTouchInput = value;
+    notifyListeners();
+    await StorageService().saveAllowTouchInput(value);
+  }
+
   Future<void> _loadSettings() async {
     _playingAs = StorageService().loadColor();
     _gameMode = StorageService().loadGameMode();
@@ -88,6 +96,7 @@ class SettingsProvider extends ChangeNotifier {
     _vibrationSpeed = StorageService().loadVibrationSpeed();
     _stockfishDepth = StorageService().loadStockfishDepth();
     _promotionChoice = StorageService().loadPromotionChoice();
+    _allowTouchInput = StorageService().loadAllowTouchInput();
 
     notifyListeners();
   }
