@@ -90,32 +90,28 @@ class InputArea extends ConsumerWidget {
           ),
         ),
         if (settings.playingAs == Side.black)
-          Tooltip(
-            message: "Rotate Input Controls",
-            child: InkWell(
-              onTap: () {
-                ref
-                    .read(settingsProvider.notifier)
-                    .setRotateBoardForBlack(!settings.rotateBoardForBlack);
-              },
-              borderRadius: BorderRadius.circular(20),
-              child: Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: settings.rotateBoardForBlack
-                      ? buttonColor.withOpacity(0.2)
-                      : Colors.transparent,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.rotate_right_rounded,
-                  color: settings.rotateBoardForBlack
-                      ? buttonColor
-                      : Colors.white54,
-                  size: 24,
+          Row(
+            children: [
+              const Text(
+                "Rotate Input",
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
-            ),
+              const SizedBox(width: 8),
+              Switch(
+                value: settings.rotateBoardForBlack,
+                activeColor: white,
+                activeTrackColor: buttonColor,
+                onChanged: (value) {
+                  ref
+                      .read(settingsProvider.notifier)
+                      .setRotateBoardForBlack(value);
+                },
+              ),
+            ],
           ),
       ],
     );

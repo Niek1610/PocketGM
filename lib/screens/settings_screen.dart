@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:dartchess/dartchess.dart';
+
 import 'package:pocketgm/constants/colors..dart';
 import 'package:pocketgm/models/game_mode.dart';
 import 'package:pocketgm/models/input_mode.dart';
@@ -421,42 +421,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       groupValue: groupValue,
       onChanged: onChanged,
       dense: compact,
-    );
-  }
-
-  Widget _buildColorButton(Side side, bool isSelected, WidgetRef ref) {
-    return GestureDetector(
-      onTap: () {
-        ref.read(settingsProvider.notifier).setPlayingAs(side);
-      },
-      child: Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-          color: side == Side.white ? Colors.white : Colors.black,
-          shape: BoxShape.circle,
-          border: Border.all(
-            color: isSelected ? buttonColor : Colors.grey,
-            width: isSelected ? 3 : 1,
-          ),
-          boxShadow: isSelected
-              ? [
-                  BoxShadow(
-                    color: buttonColor.withOpacity(0.5),
-                    blurRadius: 8,
-                    spreadRadius: 2,
-                  ),
-                ]
-              : [],
-        ),
-        child: isSelected
-            ? Icon(
-                Icons.check,
-                color: side == Side.white ? Colors.black : Colors.white,
-                size: 24,
-              )
-            : null,
-      ),
     );
   }
 }

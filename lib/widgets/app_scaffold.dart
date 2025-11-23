@@ -25,7 +25,19 @@ class AppScaffold extends StatelessWidget {
         automaticallyImplyLeading: showBackButton,
         foregroundColor: white,
         backgroundColor: primaryColor,
-        title: title != null ? Text(title!) : null,
+        centerTitle: true,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        title: title != null
+            ? Text(
+                title!,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                  letterSpacing: 0.5,
+                ),
+              )
+            : null,
         actions: actions,
       ),
       body: body,
