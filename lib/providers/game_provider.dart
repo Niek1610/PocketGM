@@ -15,12 +15,27 @@ class GameProvider extends ChangeNotifier {
   List<Move> _moveHistory = [];
   Move? _lastMove;
   bool _isGameStarted = false;
+  double _currentEvaluation = 0.0;
 
   final stockfishService = StockfishService();
 
   final SettingsProvider _settings;
 
-  GameProvider(this._settings);
+  GameProvider(this._settings) {
+    stockfishService.evaluationStream.listen((score) {
+      // Stockfish reports score from side to move perspective.
+      // We want to normalize it to White's perspective for the UI bar usually.
+      // If it's Black's turn, and score is +1.0 (Black is winning),
+      // then from White's perspective it is -1.0.
+
+      if (_position.turn == Side.black) {
+        _currentEvaluation = -score;
+      } else {
+        _currentEvaluation = score;
+      }
+      notifyListeners();
+    });
+  }
 
   void onStockfishReady() {
     if (_isGameStarted) {
@@ -36,6 +51,7 @@ class GameProvider extends ChangeNotifier {
   InputLogMode get inputLogMode => _settings.inputLogMode;
   InputMode get inputMode => _settings.inputMode;
   bool get isGameStarted => _isGameStarted;
+  double get currentEvaluation => _currentEvaluation;
 
   void startGame() {
     _isGameStarted = true;

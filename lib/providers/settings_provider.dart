@@ -7,6 +7,7 @@ import 'package:pocketgm/models/input_mode.dart';
 import 'package:pocketgm/models/promotion_choice.dart';
 import 'package:pocketgm/models/vibration_speed.dart';
 import 'package:pocketgm/services/storage_service.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 class SettingsProvider extends ChangeNotifier {
   Side _playingAs = Side.white;
@@ -17,6 +18,7 @@ class SettingsProvider extends ChangeNotifier {
   VibrationSpeed _vibrationSpeed = VibrationSpeed.normal;
   int _stockfishDepth = 15;
   PromotionChoice _promotionChoice = PromotionChoice.queen;
+  bool _wakelock = false;
 
   SettingsProvider() {
     _loadSettings();
@@ -30,6 +32,7 @@ class SettingsProvider extends ChangeNotifier {
   VibrationSpeed get vibrationSpeed => _vibrationSpeed;
   int get stockfishDepth => _stockfishDepth;
   PromotionChoice get promotionChoice => _promotionChoice;
+  bool get wakelock => _wakelock;
 
   Future<void> setPlayingAs(Side color) async {
     _playingAs = color;
@@ -79,6 +82,17 @@ class SettingsProvider extends ChangeNotifier {
     await StorageService().savePromotionChoice(choice);
   }
 
+  Future<void> setWakelock(bool value) async {
+    _wakelock = value;
+    notifyListeners();
+    await StorageService().saveWakelock(value);
+    if (value) {
+      WakelockPlus.enable();
+    } else {
+      WakelockPlus.disable();
+    }
+  }
+
   Future<void> _loadSettings() async {
     _playingAs = StorageService().loadColor();
     _inputLogMode = StorageService().loadInputLogMode();
@@ -88,6 +102,12 @@ class SettingsProvider extends ChangeNotifier {
     _vibrationSpeed = StorageService().loadVibrationSpeed();
     _stockfishDepth = StorageService().loadStockfishDepth();
     _promotionChoice = StorageService().loadPromotionChoice();
+    _wakelock = StorageService().loadWakelock();
+
+    if (_wakelock) {
+      WakelockPlus.enable();
+    }
+
     notifyListeners();
   }
 }

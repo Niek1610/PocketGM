@@ -48,6 +48,23 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       .setRotateBoardForBlack(value);
                 },
               ),
+              _buildDivider(),
+              SwitchListTile(
+                activeColor: white,
+                activeTrackColor: buttonColor,
+                title: const Text(
+                  'Wakelock',
+                  style: TextStyle(color: white, fontWeight: FontWeight.w600),
+                ),
+                subtitle: const Text(
+                  'Keep screen on while app is open',
+                  style: TextStyle(color: Colors.white70, fontSize: 12),
+                ),
+                value: settings.wakelock,
+                onChanged: (value) {
+                  ref.read(settingsProvider.notifier).setWakelock(value);
+                },
+              ),
             ],
           ),
           const SizedBox(height: 24),

@@ -14,38 +14,43 @@ class GameBoard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final gameState = ref.watch(gameProvider);
     final settings = ref.watch(settingsProvider);
-    final screenWidth = MediaQuery.of(context).size.width;
 
-    return Chessboard(
-      settings: const ChessboardSettings(
-        pieceShiftMethod: PieceShiftMethod.either,
-      ),
-      size: screenWidth,
-      orientation: gameState.playingAs,
-      fen: gameState.fen,
-      game: GameData(
-        playerSide: settings.inputMode == InputMode.interfaceMode
-            ? PlayerSide.both
-            : PlayerSide.none,
-        sideToMove: gameState.sideToMove,
-        validMoves: ValidMoves(
-          gameState.validMoves.unlock.map(
-            (from, destinations) => MapEntry(
-              Square.fromName(from),
-              destinations.map((s) => Square.fromName(s)).toISet(),
-            ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final boardSize = constraints.maxWidth;
+
+        return Chessboard(
+          settings: const ChessboardSettings(
+            pieceShiftMethod: PieceShiftMethod.either,
           ),
-        ),
-        promotionMove: null,
-        onMove: (move, {isDrop}) {
-          gameState.makeMove(
-            move.from.name,
-            move.to.name,
-            promotion: move.promotion,
-          );
-        },
-        onPromotionSelection: (role) {},
-      ),
+          size: boardSize,
+          orientation: gameState.playingAs,
+          fen: gameState.fen,
+          game: GameData(
+            playerSide: settings.inputMode == InputMode.interfaceMode
+                ? PlayerSide.both
+                : PlayerSide.none,
+            sideToMove: gameState.sideToMove,
+            validMoves: ValidMoves(
+              gameState.validMoves.unlock.map(
+                (from, destinations) => MapEntry(
+                  Square.fromName(from),
+                  destinations.map((s) => Square.fromName(s)).toISet(),
+                ),
+              ),
+            ),
+            promotionMove: null,
+            onMove: (move, {isDrop}) {
+              gameState.makeMove(
+                move.from.name,
+                move.to.name,
+                promotion: move.promotion,
+              );
+            },
+            onPromotionSelection: (role) {},
+          ),
+        );
+      },
     );
   }
 }

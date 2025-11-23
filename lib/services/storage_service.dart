@@ -94,4 +94,12 @@ class StorageService {
     }
     return PromotionChoice.values[index];
   }
+
+  Future<void> saveWakelock(bool value) async {
+    await _prefs.setBool('wakelock', value);
+  }
+
+  bool loadWakelock() {
+    return _prefs.getBool('wakelock') ?? false;
+  }
 }
