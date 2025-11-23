@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pocketgm/constants/colors..dart';
 import 'package:pocketgm/models/input_log_mode.dart';
 import 'package:pocketgm/models/input_mode.dart';
 import 'package:pocketgm/providers/settings_provider.dart';
@@ -18,7 +17,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
     return AppScaffold(
-      backgroundColor: white,
       body: ListView(
         children: [
           ListTile(

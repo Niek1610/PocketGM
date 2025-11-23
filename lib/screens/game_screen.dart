@@ -7,7 +7,7 @@ import 'package:pocketgm/constants/colors..dart';
 import 'package:pocketgm/models/input_log_mode.dart';
 import 'package:pocketgm/models/input_mode.dart';
 import 'package:pocketgm/providers/game_provider.dart';
-import 'package:pocketgm/providers/interface_input_provider.dart';
+import 'package:pocketgm/providers/input_provider.dart';
 import 'package:pocketgm/providers/settings_provider.dart';
 import 'package:pocketgm/services/engine/stockfish.dart';
 import 'package:pocketgm/widgets/app_scaffold.dart';
@@ -57,7 +57,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
   Widget build(BuildContext context) {
     final gameState = ref.watch(gameProvider);
     final settings = ref.watch(settingsProvider);
-    final interfaceInput = ref.watch(interfaceInputProvider);
+    final input = ref.watch(inputProvider);
     final double screenWidth = MediaQuery.of(context).size.width;
     final inputMode = settings.inputMode;
 
@@ -99,9 +99,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                   padding: const EdgeInsets.all(4.0),
                   child: Text(
                     textAlign: TextAlign.center,
-                    inputMode == InputMode.interfaceMode
-                        ? interfaceInput.displayText
-                        : "input",
+                    input.displayText,
                     style: Theme.of(
                       context,
                     ).textTheme.labelSmall!.copyWith(color: white),
@@ -293,7 +291,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                 child: PrimaryButton(
                   onPressed: isInputAllowed
                       ? () {
-                          ref.read(interfaceInputProvider.notifier).increment();
+                          ref.read(inputProvider.notifier).increment();
                         }
                       : () {}, // Disable action but keep button enabled visually or disable it?
                   // Better to disable it visually if not allowed, but PrimaryButton might not support null onPressed for disabled state style?
@@ -306,7 +304,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                 child: PrimaryButton(
                   onPressed: isInputAllowed
                       ? () {
-                          ref.read(interfaceInputProvider.notifier).confirm();
+                          ref.read(inputProvider.notifier).confirm();
                         }
                       : () {},
                   text: "Confirm",

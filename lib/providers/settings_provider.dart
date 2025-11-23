@@ -40,6 +40,7 @@ class SettingsProvider extends ChangeNotifier {
   Future<void> _loadSettings() async {
     _playingAs = StorageService().loadColor();
     _inputLogMode = StorageService().loadInputLogMode();
+    _inputMode = StorageService().loadInputMode();
     notifyListeners();
   }
 }

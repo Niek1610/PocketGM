@@ -3,9 +3,11 @@ import 'package:flutter/foundation.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:pocketgm/models/input_log_mode.dart';
+import 'package:pocketgm/models/input_mode.dart';
 
 import 'package:pocketgm/providers/settings_provider.dart';
 import 'package:pocketgm/services/engine/stockfish.dart';
+import 'package:pocketgm/services/vibration_service.dart';
 
 class GameProvider extends ChangeNotifier {
   Position _position = Chess.initial;
@@ -19,9 +21,7 @@ class GameProvider extends ChangeNotifier {
   GameProvider(this._settings);
 
   void onStockfishReady() {
-    if (_settings.inputLogMode == InputLogMode.quickMode &&
-        _settings.playingAs == Side.white &&
-        _position.turn == Side.white) {
+    if (_settings.playingAs == Side.white && _position.turn == Side.white) {
       _getAndPlayBestMove();
     }
   }
@@ -32,14 +32,15 @@ class GameProvider extends ChangeNotifier {
   List<Move> get moveHistory => List.unmodifiable(_moveHistory);
   Move? get lastMove => _lastMove;
   InputLogMode get inputLogMode => _settings.inputLogMode;
+  InputMode get inputMode => _settings.inputMode;
 
   Future<String?> getBestMoveUCI() async {
     return await stockfishService.getBestMove(fen);
   }
 
-  Future<void> sendUserFeedback() async {}
-
-  Future<void> getUserInput() async {}
+  Future<void> sendUserMoveFeedback(String from, String to) async {
+    await VibrationService().feedbackMove(from, to);
+  }
 
   Future<void> _getAndPlayBestMove() async {
     final bestMove = await getBestMoveUCI();
@@ -47,8 +48,10 @@ class GameProvider extends ChangeNotifier {
       //split de move op naar "from" en "to"
       final from = bestMove.substring(0, 2);
       final to = bestMove.substring(2, 4);
-
-      makeMove(from, to);
+      sendUserMoveFeedback(from, to);
+      if (_settings.inputLogMode == InputLogMode.quickMode) {
+        makeMove(from, to);
+      }
     }
   }
 
@@ -62,7 +65,11 @@ class GameProvider extends ChangeNotifier {
     return moves.lock;
   }
 
-  bool makeMove(String fromSquare, String toSquare, {Role? promotion}) {
+  Future<bool> makeMove(
+    String fromSquare,
+    String toSquare, {
+    Role? promotion,
+  }) async {
     try {
       final from = Square.fromName(fromSquare);
       final to = Square.fromName(toSquare);
@@ -70,6 +77,7 @@ class GameProvider extends ChangeNotifier {
       final move = NormalMove(from: from, to: to, promotion: promotion);
 
       if (!_position.isLegal(move)) {
+        await VibrationService().feedbackError();
         if (kDebugMode) {
           print('Illegal move: $fromSquare -> $toSquare');
         }
@@ -83,9 +91,7 @@ class GameProvider extends ChangeNotifier {
 
       notifyListeners();
 
-      if (_settings.inputLogMode == InputLogMode.quickMode &&
-          _position.turn == _settings.playingAs &&
-          !_position.isGameOver) {
+      if (_position.turn == _settings.playingAs && !_position.isGameOver) {
         _getAndPlayBestMove();
       }
 
