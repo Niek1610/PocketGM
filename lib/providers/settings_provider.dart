@@ -4,6 +4,7 @@ import 'package:dartchess/dartchess.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:pocketgm/models/input_log_mode.dart';
 import 'package:pocketgm/models/input_mode.dart';
+import 'package:pocketgm/models/vibration_speed.dart';
 import 'package:pocketgm/services/storage_service.dart';
 
 class SettingsProvider extends ChangeNotifier {
@@ -11,7 +12,8 @@ class SettingsProvider extends ChangeNotifier {
   InputLogMode _inputLogMode = InputLogMode.quickMode;
   InputMode _inputMode = InputMode.interfaceMode;
   bool _rotateBoardForBlack = false;
-  bool _rotateBoardForWhite = false;
+  int _vibrationStrength = 255;
+  VibrationSpeed _vibrationSpeed = VibrationSpeed.normal;
 
   SettingsProvider() {
     _loadSettings();
@@ -21,7 +23,8 @@ class SettingsProvider extends ChangeNotifier {
   InputLogMode get inputLogMode => _inputLogMode;
   InputMode get inputMode => _inputMode;
   bool get rotateBoardForBlack => _rotateBoardForBlack;
-  bool get rotateBoardForWhite => _rotateBoardForWhite;
+  int get vibrationStrength => _vibrationStrength;
+  VibrationSpeed get vibrationSpeed => _vibrationSpeed;
 
   Future<void> setPlayingAs(Side color) async {
     _playingAs = color;
@@ -33,12 +36,6 @@ class SettingsProvider extends ChangeNotifier {
     _rotateBoardForBlack = value;
     notifyListeners();
     await StorageService().saveRotateBoardForBlack(value);
-  }
-
-  Future<void> setRotateBoardForWhite(bool value) async {
-    _rotateBoardForWhite = value;
-    notifyListeners();
-    await StorageService().saveRotateBoardForWhite(value);
   }
 
   Future<void> setInputLogMode(InputLogMode mode) async {
@@ -53,12 +50,25 @@ class SettingsProvider extends ChangeNotifier {
     await StorageService().saveInputMode(mode);
   }
 
+  Future<void> setVibrationStrength(int value) async {
+    _vibrationStrength = value;
+    notifyListeners();
+    await StorageService().saveVibrationStrength(value);
+  }
+
+  Future<void> setVibrationSpeed(VibrationSpeed speed) async {
+    _vibrationSpeed = speed;
+    notifyListeners();
+    await StorageService().saveVibrationSpeed(speed);
+  }
+
   Future<void> _loadSettings() async {
     _playingAs = StorageService().loadColor();
     _inputLogMode = StorageService().loadInputLogMode();
     _inputMode = StorageService().loadInputMode();
     _rotateBoardForBlack = StorageService().loadRotateBoardForBlack();
-    _rotateBoardForWhite = StorageService().loadRotateBoardForWhite();
+    _vibrationStrength = StorageService().loadVibrationStrength();
+    _vibrationSpeed = StorageService().loadVibrationSpeed();
     notifyListeners();
   }
 }

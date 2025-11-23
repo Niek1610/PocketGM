@@ -72,8 +72,7 @@ class InputProvider extends ChangeNotifier {
 
     final settings = _ref.read(settingsProvider);
     final isFlipped =
-        (settings.playingAs == Side.black && settings.rotateBoardForBlack) ||
-        (settings.playingAs == Side.white && settings.rotateBoardForWhite);
+        settings.playingAs == Side.black && settings.rotateBoardForBlack;
 
     String char;
     if (_inputStep % 2 == 0) {
@@ -150,5 +149,6 @@ class InputProvider extends ChangeNotifier {
 }
 
 final inputProvider = ChangeNotifierProvider((ref) {
+  ref.watch(settingsProvider);
   return InputProvider(ref);
 });

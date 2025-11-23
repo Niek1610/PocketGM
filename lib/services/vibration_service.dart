@@ -1,3 +1,4 @@
+import 'package:pocketgm/models/vibration_speed.dart';
 import 'package:vibration/vibration.dart';
 import 'package:vibration/vibration_presets.dart';
 
@@ -55,6 +56,8 @@ class VibrationService {
     String from,
     String to, {
     bool isFlipped = false,
+    int strength = 255,
+    VibrationSpeed speed = VibrationSpeed.normal,
   }) async {
     int fromCol =
         from.substring(0, 1).toLowerCase().codeUnitAt(0) -
@@ -73,15 +76,34 @@ class VibrationService {
       toRow = 9 - toRow;
     }
 
+    int pulseDuration = 50;
+    int gapDuration;
+    int groupGapDuration;
+
+    switch (speed) {
+      case VibrationSpeed.fast:
+        gapDuration = 200;
+        groupGapDuration = 600;
+        break;
+      case VibrationSpeed.slow:
+        gapDuration = 800;
+        groupGapDuration = 1600;
+        break;
+      case VibrationSpeed.normal:
+        gapDuration = 500;
+        groupGapDuration = 1200;
+        break;
+    }
+
     List<int> pattern = [];
     List<int> intensities = [];
 
     void addPulses(int count) {
       for (int i = 0; i < count; i++) {
-        pattern.addAll([50, 500]);
-        intensities.addAll([255, 0]);
+        pattern.addAll([pulseDuration, gapDuration]);
+        intensities.addAll([strength, 0]);
       }
-      pattern.add(1200);
+      pattern.add(groupGapDuration);
       intensities.add(0);
     }
 

@@ -54,9 +54,14 @@ class GameProvider extends ChangeNotifier {
 
   Future<void> sendUserMoveFeedback(String from, String to) async {
     final isFlipped =
-        (_settings.playingAs == Side.black && _settings.rotateBoardForBlack) ||
-        (_settings.playingAs == Side.white && _settings.rotateBoardForWhite);
-    await VibrationService().feedbackMove(from, to, isFlipped: isFlipped);
+        _settings.playingAs == Side.black && _settings.rotateBoardForBlack;
+    await VibrationService().feedbackMove(
+      from,
+      to,
+      isFlipped: isFlipped,
+      strength: _settings.vibrationStrength,
+      speed: _settings.vibrationSpeed,
+    );
   }
 
   Future<void> _getAndPlayBestMove() async {
@@ -154,13 +159,6 @@ class GameProvider extends ChangeNotifier {
 
   Future<void> repeatLastMoveFeedback() async {
     if (_lastMove != null) {
-      // Move is an abstract class in dartchess, we need to cast or handle specific types
-      // But NormalMove, DropMove etc all have from/to or similar.
-      // Actually dartchess Move doesn't have 'from' directly on the base class if it's a union or sealed class?
-      // Let's check how makeMove uses it.
-      // makeMove creates a NormalMove.
-      // _lastMove is type Move.
-
       if (_lastMove is NormalMove) {
         final move = _lastMove as NormalMove;
         await sendUserMoveFeedback(move.from.name, move.to.name);

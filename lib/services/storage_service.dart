@@ -1,6 +1,7 @@
 import 'package:dartchess/dartchess.dart';
 import 'package:pocketgm/models/input_log_mode.dart';
 import 'package:pocketgm/models/input_mode.dart';
+import 'package:pocketgm/models/vibration_speed.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StorageService {
@@ -51,11 +52,23 @@ class StorageService {
     return _prefs.getBool('rotate_board_for_black') ?? false;
   }
 
-  Future<void> saveRotateBoardForWhite(bool value) async {
-    await _prefs.setBool('rotate_board_for_white', value);
+  Future<void> saveVibrationStrength(int value) async {
+    await _prefs.setInt('vibration_strength', value);
   }
 
-  bool loadRotateBoardForWhite() {
-    return _prefs.getBool('rotate_board_for_white') ?? false;
+  int loadVibrationStrength() {
+    return _prefs.getInt('vibration_strength') ?? 255;
+  }
+
+  Future<void> saveVibrationSpeed(VibrationSpeed speed) async {
+    await _prefs.setInt('vibration_speed', speed.index);
+  }
+
+  VibrationSpeed loadVibrationSpeed() {
+    final index = _prefs.getInt('vibration_speed') ?? 1; // Default to normal
+    if (index < 0 || index >= VibrationSpeed.values.length) {
+      return VibrationSpeed.normal;
+    }
+    return VibrationSpeed.values[index];
   }
 }

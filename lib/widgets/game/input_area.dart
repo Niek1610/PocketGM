@@ -68,31 +68,24 @@ class InputArea extends ConsumerWidget {
             }
           },
         ),
-        Row(
-          children: [
-            Text(
-              "Rotate Input",
-              style: TextStyle(color: white.withOpacity(0.7), fontSize: 12),
-            ),
-            Switch(
-              value: settings.playingAs == Side.black
-                  ? settings.rotateBoardForBlack
-                  : settings.rotateBoardForWhite,
-              onChanged: (val) {
-                if (settings.playingAs == Side.black) {
+        if (settings.playingAs == Side.black)
+          Row(
+            children: [
+              Text(
+                "Rotate Input",
+                style: TextStyle(color: white.withOpacity(0.7), fontSize: 12),
+              ),
+              Switch(
+                value: settings.rotateBoardForBlack,
+                onChanged: (val) {
                   ref
                       .read(settingsProvider.notifier)
                       .setRotateBoardForBlack(val);
-                } else {
-                  ref
-                      .read(settingsProvider.notifier)
-                      .setRotateBoardForWhite(val);
-                }
-              },
-              activeColor: buttonColor,
-            ),
-          ],
-        ),
+                },
+                activeColor: buttonColor,
+              ),
+            ],
+          ),
       ],
     );
   }
@@ -105,8 +98,7 @@ class InputArea extends ConsumerWidget {
     SettingsProvider settings,
   ) {
     final isFlipped =
-        (settings.playingAs == Side.black && settings.rotateBoardForBlack) ||
-        (settings.playingAs == Side.white && settings.rotateBoardForWhite);
+        settings.playingAs == Side.black && settings.rotateBoardForBlack;
     final colRange = isFlipped ? "h-a" : "a-h";
     final rowRange = isFlipped ? "8-1" : "1-8";
 
@@ -125,7 +117,7 @@ class InputArea extends ConsumerWidget {
                           .handleLongPressIncrement()
                     : null,
                 text: "Increment",
-                icon: Icons.add,
+
                 backgroundColor: isInputAllowed
                     ? null
                     : Colors.grey.withOpacity(0.3),
@@ -143,7 +135,7 @@ class InputArea extends ConsumerWidget {
                           .handleLongPressConfirm()
                     : null,
                 text: "Confirm",
-                icon: Icons.check,
+
                 backgroundColor: isInputAllowed
                     ? null
                     : Colors.grey.withOpacity(0.3),
