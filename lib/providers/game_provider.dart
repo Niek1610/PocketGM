@@ -181,6 +181,7 @@ class GameProvider extends ChangeNotifier {
     _lastMove = _moveHistory.isNotEmpty ? _moveHistory.last : null;
 
     notifyListeners();
+    _checkAndPlayBestMove();
     return true;
   }
 

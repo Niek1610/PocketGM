@@ -83,8 +83,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       inactiveColor: Colors.white24,
                       value: settings.stockfishDepth.toDouble(),
                       min: 1,
-                      max: 30,
-                      divisions: 29,
+                      max: 15,
+                      divisions: 14,
                       onChanged: (double value) {
                         ref
                             .read(settingsProvider.notifier)

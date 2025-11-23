@@ -15,7 +15,7 @@ class SettingsProvider extends ChangeNotifier {
   bool _rotateBoardForBlack = false;
   int _vibrationStrength = 255;
   VibrationSpeed _vibrationSpeed = VibrationSpeed.normal;
-  int _stockfishDepth = 20;
+  int _stockfishDepth = 15;
   PromotionChoice _promotionChoice = PromotionChoice.queen;
 
   SettingsProvider() {

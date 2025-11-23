@@ -78,7 +78,9 @@ class StorageService {
   }
 
   int loadStockfishDepth() {
-    return _prefs.getInt('stockfish_depth') ?? 20;
+    final depth = _prefs.getInt('stockfish_depth') ?? 15;
+    if (depth > 15) return 15;
+    return depth;
   }
 
   Future<void> savePromotionChoice(PromotionChoice choice) async {
