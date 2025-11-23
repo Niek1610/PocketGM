@@ -4,6 +4,7 @@ import 'package:dartchess/dartchess.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:pocketgm/models/input_log_mode.dart';
 import 'package:pocketgm/models/input_mode.dart';
+import 'package:pocketgm/models/promotion_choice.dart';
 import 'package:pocketgm/models/vibration_speed.dart';
 import 'package:pocketgm/services/storage_service.dart';
 
@@ -14,6 +15,8 @@ class SettingsProvider extends ChangeNotifier {
   bool _rotateBoardForBlack = false;
   int _vibrationStrength = 255;
   VibrationSpeed _vibrationSpeed = VibrationSpeed.normal;
+  int _stockfishDepth = 20;
+  PromotionChoice _promotionChoice = PromotionChoice.queen;
 
   SettingsProvider() {
     _loadSettings();
@@ -25,6 +28,8 @@ class SettingsProvider extends ChangeNotifier {
   bool get rotateBoardForBlack => _rotateBoardForBlack;
   int get vibrationStrength => _vibrationStrength;
   VibrationSpeed get vibrationSpeed => _vibrationSpeed;
+  int get stockfishDepth => _stockfishDepth;
+  PromotionChoice get promotionChoice => _promotionChoice;
 
   Future<void> setPlayingAs(Side color) async {
     _playingAs = color;
@@ -62,6 +67,18 @@ class SettingsProvider extends ChangeNotifier {
     await StorageService().saveVibrationSpeed(speed);
   }
 
+  Future<void> setStockfishDepth(int value) async {
+    _stockfishDepth = value;
+    notifyListeners();
+    await StorageService().saveStockfishDepth(value);
+  }
+
+  Future<void> setPromotionChoice(PromotionChoice choice) async {
+    _promotionChoice = choice;
+    notifyListeners();
+    await StorageService().savePromotionChoice(choice);
+  }
+
   Future<void> _loadSettings() async {
     _playingAs = StorageService().loadColor();
     _inputLogMode = StorageService().loadInputLogMode();
@@ -69,6 +86,8 @@ class SettingsProvider extends ChangeNotifier {
     _rotateBoardForBlack = StorageService().loadRotateBoardForBlack();
     _vibrationStrength = StorageService().loadVibrationStrength();
     _vibrationSpeed = StorageService().loadVibrationSpeed();
+    _stockfishDepth = StorageService().loadStockfishDepth();
+    _promotionChoice = StorageService().loadPromotionChoice();
     notifyListeners();
   }
 }

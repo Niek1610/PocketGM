@@ -4,6 +4,7 @@ import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:pocketgm/models/input_log_mode.dart';
 import 'package:pocketgm/models/input_mode.dart';
+import 'package:pocketgm/models/promotion_choice.dart';
 
 import 'package:pocketgm/providers/settings_provider.dart';
 import 'package:pocketgm/services/engine/stockfish.dart';
@@ -49,7 +50,10 @@ class GameProvider extends ChangeNotifier {
   }
 
   Future<String?> getBestMoveUCI() async {
-    return await stockfishService.getBestMove(fen);
+    return await stockfishService.getBestMove(
+      fen,
+      depth: _settings.stockfishDepth,
+    );
   }
 
   Future<void> sendUserMoveFeedback(String from, String to) async {
@@ -95,6 +99,34 @@ class GameProvider extends ChangeNotifier {
     try {
       final from = Square.fromName(fromSquare);
       final to = Square.fromName(toSquare);
+
+      // Check for auto-promotion if promotion is not specified
+      if (promotion == null) {
+        final piece = _position.board.pieceAt(from);
+        if (piece?.role == Role.pawn) {
+          final isWhite = piece?.color == Side.white;
+          final isPromotionRank =
+              (isWhite && to.rank == Rank.values.last) ||
+              (!isWhite && to.rank == Rank.values.first);
+
+          if (isPromotionRank) {
+            switch (_settings.promotionChoice) {
+              case PromotionChoice.queen:
+                promotion = Role.queen;
+                break;
+              case PromotionChoice.rook:
+                promotion = Role.rook;
+                break;
+              case PromotionChoice.bishop:
+                promotion = Role.bishop;
+                break;
+              case PromotionChoice.knight:
+                promotion = Role.knight;
+                break;
+            }
+          }
+        }
+      }
 
       final move = NormalMove(from: from, to: to, promotion: promotion);
 

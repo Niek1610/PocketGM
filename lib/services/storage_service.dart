@@ -2,6 +2,7 @@ import 'package:dartchess/dartchess.dart';
 import 'package:pocketgm/models/input_log_mode.dart';
 import 'package:pocketgm/models/input_mode.dart';
 import 'package:pocketgm/models/vibration_speed.dart';
+import 'package:pocketgm/models/promotion_choice.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StorageService {
@@ -70,5 +71,25 @@ class StorageService {
       return VibrationSpeed.normal;
     }
     return VibrationSpeed.values[index];
+  }
+
+  Future<void> saveStockfishDepth(int value) async {
+    await _prefs.setInt('stockfish_depth', value);
+  }
+
+  int loadStockfishDepth() {
+    return _prefs.getInt('stockfish_depth') ?? 20;
+  }
+
+  Future<void> savePromotionChoice(PromotionChoice choice) async {
+    await _prefs.setInt('promotion_choice', choice.index);
+  }
+
+  PromotionChoice loadPromotionChoice() {
+    final index = _prefs.getInt('promotion_choice') ?? 0; // Default to queen
+    if (index < 0 || index >= PromotionChoice.values.length) {
+      return PromotionChoice.queen;
+    }
+    return PromotionChoice.values[index];
   }
 }

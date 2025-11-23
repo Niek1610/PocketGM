@@ -36,14 +36,14 @@ class StockfishService {
     isStockfishInitialized = true;
   }
 
-  Future<String?> getBestMove(String fen) async {
+  Future<String?> getBestMove(String fen, {int depth = 20}) async {
     //laaste beste zet resetten
     _lastBestMove = null;
 
     //positie doorgeven aan stockfish
     stockfish!.stdin = "position fen $fen";
     //Stockfish denktijd (later aanpasbaar maken via settings)
-    stockfish!.stdin = 'go movetime 1000';
+    stockfish!.stdin = 'go depth $depth';
 
     //wachten op het antwoord van stockfish (max 5 seconden)
     final timeout = Duration(seconds: 5);

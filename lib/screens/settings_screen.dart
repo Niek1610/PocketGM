@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pocketgm/constants/colors..dart';
 import 'package:pocketgm/models/input_log_mode.dart';
 import 'package:pocketgm/models/input_mode.dart';
+import 'package:pocketgm/models/promotion_choice.dart';
 import 'package:pocketgm/models/vibration_speed.dart';
+import 'package:pocketgm/providers/bluetooth_provider.dart';
 import 'package:pocketgm/providers/settings_provider.dart';
 import 'package:pocketgm/widgets/app_scaffold.dart';
 
@@ -18,6 +21,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
+    final bluetooth = ref.watch(bluetoothProvider);
 
     return AppScaffold(
       body: ListView(
@@ -47,9 +51,62 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ],
           ),
           const SizedBox(height: 24),
-          _buildSectionHeader('Game Mode'),
+          _buildSectionHeader('Engine'),
           _buildSection(
             children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 12.0,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Stockfish Depth',
+                          style: TextStyle(
+                            color: white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Text(
+                          '${settings.stockfishDepth}',
+                          style: const TextStyle(color: white),
+                        ),
+                      ],
+                    ),
+                    Slider(
+                      activeColor: white,
+                      inactiveColor: Colors.white24,
+                      value: settings.stockfishDepth.toDouble(),
+                      min: 1,
+                      max: 30,
+                      divisions: 29,
+                      onChanged: (double value) {
+                        ref
+                            .read(settingsProvider.notifier)
+                            .setStockfishDepth(value.toInt());
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+          _buildSectionHeader('Game Settings'),
+          _buildSection(
+            children: [
+              const Padding(
+                padding: EdgeInsets.fromLTRB(16, 12, 16, 4),
+                child: Text(
+                  'Mode',
+                  style: TextStyle(color: white, fontWeight: FontWeight.w600),
+                ),
+              ),
               _buildRadioTile<InputLogMode>(
                 title: 'Quick-Mode',
                 subtitle:
@@ -68,6 +125,42 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 onChanged: (mode) =>
                     ref.read(settingsProvider.notifier).setInputLogMode(mode!),
               ),
+              _buildDivider(),
+              const Padding(
+                padding: EdgeInsets.fromLTRB(16, 12, 16, 4),
+                child: Text(
+                  'Pawn Promotion',
+                  style: TextStyle(color: white, fontWeight: FontWeight.w600),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: DropdownButton<PromotionChoice>(
+                  value: settings.promotionChoice,
+                  dropdownColor: buttonColor,
+                  style: const TextStyle(color: white),
+                  isExpanded: true,
+                  underline: Container(height: 1, color: Colors.white24),
+                  icon: const Icon(Icons.arrow_drop_down, color: white),
+                  items: PromotionChoice.values.map((PromotionChoice choice) {
+                    return DropdownMenuItem<PromotionChoice>(
+                      value: choice,
+                      child: Text(
+                        choice.name[0].toUpperCase() + choice.name.substring(1),
+                        style: const TextStyle(color: white),
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (PromotionChoice? newValue) {
+                    if (newValue != null) {
+                      ref
+                          .read(settingsProvider.notifier)
+                          .setPromotionChoice(newValue);
+                    }
+                  },
+                ),
+              ),
+              const SizedBox(height: 12),
             ],
           ),
           const SizedBox(height: 24),
@@ -81,6 +174,49 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 onChanged: (mode) =>
                     ref.read(settingsProvider.notifier).setInputMode(mode!),
               ),
+              if (settings.inputMode == InputMode.bleMode)
+                Container(
+                  margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                  decoration: BoxDecoration(
+                    color: Colors.black12,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: ListTile(
+                    dense: true,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 0,
+                    ),
+                    leading: Icon(
+                      bluetooth.connectedDevice != null
+                          ? Icons.bluetooth_connected
+                          : Icons.bluetooth_disabled,
+                      color: bluetooth.connectedDevice != null
+                          ? Colors.greenAccent
+                          : Colors.white54,
+                      size: 20,
+                    ),
+                    title: Text(
+                      bluetooth.connectedDevice != null
+                          ? (bluetooth.connectedDevice!.platformName.isNotEmpty
+                                ? bluetooth.connectedDevice!.platformName
+                                : "Connected Device")
+                          : 'Not connected',
+                      style: TextStyle(
+                        color: bluetooth.connectedDevice != null
+                            ? white
+                            : Colors.white54,
+                        fontSize: 14,
+                      ),
+                    ),
+                    trailing: const Icon(
+                      Icons.chevron_right,
+                      color: Colors.white54,
+                      size: 20,
+                    ),
+                    onTap: () => context.push('/bluetooth'),
+                  ),
+                ),
               _buildDivider(),
               _buildRadioTile<InputMode>(
                 title: 'Standalone (Mobile Volume Buttons)',
@@ -190,6 +326,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ),
             ],
           ),
+
           const SizedBox(height: 40),
         ],
       ),

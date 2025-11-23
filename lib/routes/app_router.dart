@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pocketgm/screens/bluetooth_screen.dart';
 import 'package:pocketgm/screens/documentation_screen.dart';
 import 'package:pocketgm/screens/game_screen.dart';
 import 'package:pocketgm/screens/home_screen.dart';
@@ -26,6 +27,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         path: '/documentation',
         pageBuilder: (context, state) =>
             NoTransitionPage(child: DocumentationScreen()),
+      ),
+      GoRoute(
+        path: '/bluetooth',
+        pageBuilder: (context, state) =>
+            NoTransitionPage(child: BluetoothScreen()),
       ),
     ],
   );
