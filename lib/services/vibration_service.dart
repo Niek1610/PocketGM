@@ -51,16 +51,27 @@ class VibrationService {
     await vibratePreset(VibrationPreset.emergencyAlert);
   }
 
-  Future<void> feedbackMove(String from, String to) async {
-    final fromCol =
+  Future<void> feedbackMove(
+    String from,
+    String to, {
+    bool isFlipped = false,
+  }) async {
+    int fromCol =
         from.substring(0, 1).toLowerCase().codeUnitAt(0) -
         'a'.codeUnitAt(0) +
         1;
-    final fromRow = int.parse(from.substring(1, 2));
+    int fromRow = int.parse(from.substring(1, 2));
 
-    final toCol =
+    int toCol =
         to.substring(0, 1).toLowerCase().codeUnitAt(0) - 'a'.codeUnitAt(0) + 1;
-    final toRow = int.parse(to.substring(1, 2));
+    int toRow = int.parse(to.substring(1, 2));
+
+    if (isFlipped) {
+      fromCol = 9 - fromCol;
+      fromRow = 9 - fromRow;
+      toCol = 9 - toCol;
+      toRow = 9 - toRow;
+    }
 
     List<int> pattern = [];
     List<int> intensities = [];
@@ -80,5 +91,11 @@ class VibrationService {
     addPulses(toRow);
 
     await vibratePattern(pattern, intensities: intensities);
+  }
+
+  Future<void> stop() async {
+    if (await _hasVibrator) {
+      Vibration.cancel();
+    }
   }
 }

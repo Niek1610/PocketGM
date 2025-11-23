@@ -42,4 +42,20 @@ class StorageService {
     final index = _prefs.getInt('input_mode') ?? 0;
     return InputMode.values[index];
   }
+
+  Future<void> saveRotateBoardForBlack(bool value) async {
+    await _prefs.setBool('rotate_board_for_black', value);
+  }
+
+  bool loadRotateBoardForBlack() {
+    return _prefs.getBool('rotate_board_for_black') ?? false;
+  }
+
+  Future<void> saveRotateBoardForWhite(bool value) async {
+    await _prefs.setBool('rotate_board_for_white', value);
+  }
+
+  bool loadRotateBoardForWhite() {
+    return _prefs.getBool('rotate_board_for_white') ?? false;
+  }
 }

@@ -13,6 +13,7 @@ class GameProvider extends ChangeNotifier {
   Position _position = Chess.initial;
   List<Move> _moveHistory = [];
   Move? _lastMove;
+  bool _isGameStarted = false;
 
   final stockfishService = StockfishService();
 
@@ -21,8 +22,8 @@ class GameProvider extends ChangeNotifier {
   GameProvider(this._settings);
 
   void onStockfishReady() {
-    if (_settings.playingAs == Side.white && _position.turn == Side.white) {
-      _getAndPlayBestMove();
+    if (_isGameStarted) {
+      _checkAndPlayBestMove();
     }
   }
 
@@ -33,13 +34,29 @@ class GameProvider extends ChangeNotifier {
   Move? get lastMove => _lastMove;
   InputLogMode get inputLogMode => _settings.inputLogMode;
   InputMode get inputMode => _settings.inputMode;
+  bool get isGameStarted => _isGameStarted;
+
+  void startGame() {
+    _isGameStarted = true;
+    notifyListeners();
+    _checkAndPlayBestMove();
+  }
+
+  void _checkAndPlayBestMove() {
+    if (_position.turn == _settings.playingAs && !_position.isGameOver) {
+      _getAndPlayBestMove();
+    }
+  }
 
   Future<String?> getBestMoveUCI() async {
     return await stockfishService.getBestMove(fen);
   }
 
   Future<void> sendUserMoveFeedback(String from, String to) async {
-    await VibrationService().feedbackMove(from, to);
+    final isFlipped =
+        (_settings.playingAs == Side.black && _settings.rotateBoardForBlack) ||
+        (_settings.playingAs == Side.white && _settings.rotateBoardForWhite);
+    await VibrationService().feedbackMove(from, to, isFlipped: isFlipped);
   }
 
   Future<void> _getAndPlayBestMove() async {
@@ -108,6 +125,7 @@ class GameProvider extends ChangeNotifier {
     _position = Chess.initial;
     _moveHistory = [];
     _lastMove = null;
+    _isGameStarted = false;
 
     notifyListeners();
   }
@@ -132,6 +150,22 @@ class GameProvider extends ChangeNotifier {
   Future<void> setPlayingAs(Side color) async {
     await _settings.setPlayingAs(color);
     notifyListeners();
+  }
+
+  Future<void> repeatLastMoveFeedback() async {
+    if (_lastMove != null) {
+      // Move is an abstract class in dartchess, we need to cast or handle specific types
+      // But NormalMove, DropMove etc all have from/to or similar.
+      // Actually dartchess Move doesn't have 'from' directly on the base class if it's a union or sealed class?
+      // Let's check how makeMove uses it.
+      // makeMove creates a NormalMove.
+      // _lastMove is type Move.
+
+      if (_lastMove is NormalMove) {
+        final move = _lastMove as NormalMove;
+        await sendUserMoveFeedback(move.from.name, move.to.name);
+      }
+    }
   }
 
   @override

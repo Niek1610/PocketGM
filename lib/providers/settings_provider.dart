@@ -10,6 +10,8 @@ class SettingsProvider extends ChangeNotifier {
   Side _playingAs = Side.white;
   InputLogMode _inputLogMode = InputLogMode.quickMode;
   InputMode _inputMode = InputMode.interfaceMode;
+  bool _rotateBoardForBlack = false;
+  bool _rotateBoardForWhite = false;
 
   SettingsProvider() {
     _loadSettings();
@@ -18,11 +20,25 @@ class SettingsProvider extends ChangeNotifier {
   Side get playingAs => _playingAs;
   InputLogMode get inputLogMode => _inputLogMode;
   InputMode get inputMode => _inputMode;
+  bool get rotateBoardForBlack => _rotateBoardForBlack;
+  bool get rotateBoardForWhite => _rotateBoardForWhite;
 
   Future<void> setPlayingAs(Side color) async {
     _playingAs = color;
     notifyListeners();
     await StorageService().saveColor(color);
+  }
+
+  Future<void> setRotateBoardForBlack(bool value) async {
+    _rotateBoardForBlack = value;
+    notifyListeners();
+    await StorageService().saveRotateBoardForBlack(value);
+  }
+
+  Future<void> setRotateBoardForWhite(bool value) async {
+    _rotateBoardForWhite = value;
+    notifyListeners();
+    await StorageService().saveRotateBoardForWhite(value);
   }
 
   Future<void> setInputLogMode(InputLogMode mode) async {
@@ -41,6 +57,8 @@ class SettingsProvider extends ChangeNotifier {
     _playingAs = StorageService().loadColor();
     _inputLogMode = StorageService().loadInputLogMode();
     _inputMode = StorageService().loadInputMode();
+    _rotateBoardForBlack = StorageService().loadRotateBoardForBlack();
+    _rotateBoardForWhite = StorageService().loadRotateBoardForWhite();
     notifyListeners();
   }
 }

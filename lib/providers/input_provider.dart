@@ -1,3 +1,4 @@
+import 'package:dartchess/dartchess.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:pocketgm/models/input_mode.dart';
@@ -57,22 +58,38 @@ class InputProvider extends ChangeNotifier {
   String get partialMove => _partialMove;
 
   Future<void> increment() async {
+    if (!_ref.read(gameProvider).isGameStarted) return;
     await VibrationService().feedbackTap();
     _currentValue = (_currentValue % 8) + 1;
     notifyListeners();
   }
 
   Future<void> confirm() async {
+    if (!_ref.read(gameProvider).isGameStarted) return;
     if (_currentValue == 0) return;
 
     await VibrationService().feedbackSuccess();
+
+    final settings = _ref.read(settingsProvider);
+    final isFlipped =
+        (settings.playingAs == Side.black && settings.rotateBoardForBlack) ||
+        (settings.playingAs == Side.white && settings.rotateBoardForWhite);
+
     String char;
     if (_inputStep % 2 == 0) {
       // File a-h
-      char = String.fromCharCode('a'.codeUnitAt(0) + _currentValue - 1);
+      if (isFlipped) {
+        char = String.fromCharCode('h'.codeUnitAt(0) - (_currentValue - 1));
+      } else {
+        char = String.fromCharCode('a'.codeUnitAt(0) + _currentValue - 1);
+      }
     } else {
       // Rank 1-8
-      char = _currentValue.toString();
+      if (isFlipped) {
+        char = (9 - _currentValue).toString();
+      } else {
+        char = _currentValue.toString();
+      }
     }
 
     _partialMove += char;
@@ -93,15 +110,40 @@ class InputProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> handleLongPressIncrement() async {
+    if (!_ref.read(gameProvider).isGameStarted) return;
+    await VibrationService().feedbackTap(); // Optional feedback
+    _ref.read(gameProvider).undoMove();
+  }
+
+  Future<void> handleLongPressConfirm() async {
+    if (!_ref.read(gameProvider).isGameStarted) return;
+    await VibrationService().feedbackTap(); // Optional feedback
+    await _ref.read(gameProvider).repeatLastMoveFeedback();
+  }
+
   String get displayText {
     if (_currentValue == 0) return "${_partialMove}_";
+
+    final settings = _ref.read(settingsProvider);
+    final isFlipped =
+        settings.playingAs == Side.black && settings.rotateBoardForBlack;
+
     String char;
     if (_inputStep % 2 == 0) {
       // File
-      char = String.fromCharCode('a'.codeUnitAt(0) + _currentValue - 1);
+      if (isFlipped) {
+        char = String.fromCharCode('h'.codeUnitAt(0) - (_currentValue - 1));
+      } else {
+        char = String.fromCharCode('a'.codeUnitAt(0) + _currentValue - 1);
+      }
     } else {
       // Rank
-      char = _currentValue.toString();
+      if (isFlipped) {
+        char = (9 - _currentValue).toString();
+      } else {
+        char = _currentValue.toString();
+      }
     }
     return _partialMove + char;
   }

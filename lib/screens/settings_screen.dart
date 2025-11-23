@@ -19,6 +19,26 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     return AppScaffold(
       body: ListView(
         children: [
+          SwitchListTile(
+            title: Text('Rotate Board for Black'),
+            subtitle: Text(
+              'Flip input and vibration patterns when playing as Black (h-a, 8-1)',
+            ),
+            value: settings.rotateBoardForBlack,
+            onChanged: (value) {
+              ref.read(settingsProvider.notifier).setRotateBoardForBlack(value);
+            },
+          ),
+          SwitchListTile(
+            title: Text('Rotate Board for White'),
+            subtitle: Text(
+              'Flip input and vibration patterns when playing as White (h-a, 8-1)',
+            ),
+            value: settings.rotateBoardForWhite,
+            onChanged: (value) {
+              ref.read(settingsProvider.notifier).setRotateBoardForWhite(value);
+            },
+          ),
           ListTile(
             title: Text(
               'Game Mode',

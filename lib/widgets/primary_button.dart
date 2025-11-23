@@ -3,18 +3,22 @@ import 'package:pocketgm/constants/colors..dart';
 
 class PrimaryButton extends StatelessWidget {
   final VoidCallback onPressed;
+  final VoidCallback? onLongPress;
   final String text;
   final IconData? icon;
   final double width;
   final double height;
+  final Color? backgroundColor;
 
   const PrimaryButton({
     super.key,
     required this.onPressed,
+    this.onLongPress,
     required this.text,
     this.icon,
     this.width = double.infinity,
     this.height = 60,
+    this.backgroundColor,
   });
 
   @override
@@ -25,12 +29,13 @@ class PrimaryButton extends StatelessWidget {
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           elevation: 0,
-          backgroundColor: buttonColor,
+          backgroundColor: backgroundColor ?? buttonColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0),
           ),
         ),
         onPressed: onPressed,
+        onLongPress: onLongPress,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
