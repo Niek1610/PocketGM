@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:dartchess/dartchess.dart';
 import 'package:pocketgm/constants/colors..dart';
-import 'package:pocketgm/models/input_log_mode.dart';
+import 'package:pocketgm/models/game_mode.dart';
 import 'package:pocketgm/models/input_mode.dart';
 import 'package:pocketgm/models/promotion_choice.dart';
 import 'package:pocketgm/models/vibration_speed.dart';
@@ -27,47 +28,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
-          _buildSectionHeader('General'),
-          _buildSection(
-            children: [
-              SwitchListTile(
-                activeColor: white,
-                activeTrackColor: buttonColor,
-                title: const Text(
-                  'Rotate Board for Black',
-                  style: TextStyle(color: white, fontWeight: FontWeight.w600),
-                ),
-                subtitle: const Text(
-                  'Flip input and vibration patterns when playing as Black (h-a, 8-1)',
-                  style: TextStyle(color: Colors.white70, fontSize: 12),
-                ),
-                value: settings.rotateBoardForBlack,
-                onChanged: (value) {
-                  ref
-                      .read(settingsProvider.notifier)
-                      .setRotateBoardForBlack(value);
-                },
-              ),
-              _buildDivider(),
-              SwitchListTile(
-                activeColor: white,
-                activeTrackColor: buttonColor,
-                title: const Text(
-                  'Wakelock',
-                  style: TextStyle(color: white, fontWeight: FontWeight.w600),
-                ),
-                subtitle: const Text(
-                  'Keep screen on while app is open',
-                  style: TextStyle(color: Colors.white70, fontSize: 12),
-                ),
-                value: settings.wakelock,
-                onChanged: (value) {
-                  ref.read(settingsProvider.notifier).setWakelock(value);
-                },
-              ),
-            ],
-          ),
-          const SizedBox(height: 24),
           _buildSectionHeader('Engine'),
           _buildSection(
             children: [
@@ -120,27 +80,38 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               const Padding(
                 padding: EdgeInsets.fromLTRB(16, 12, 16, 4),
                 child: Text(
-                  'Mode',
+                  'Game Mode',
                   style: TextStyle(color: white, fontWeight: FontWeight.w600),
                 ),
               ),
-              _buildRadioTile<InputLogMode>(
-                title: 'Quick-Mode',
+              _buildRadioTile<GameMode>(
+                title: 'Quick Mode',
                 subtitle:
-                    'Only log opponent moves (assumes you follow suggestions)',
-                value: InputLogMode.quickMode,
-                groupValue: settings.inputLogMode,
+                    'Only log opponent moves. Assumes you only play suggested moves via vibration',
+                value: GameMode.quick,
+                groupValue: settings.gameMode,
                 onChanged: (mode) =>
-                    ref.read(settingsProvider.notifier).setInputLogMode(mode!),
+                    ref.read(settingsProvider.notifier).setGameMode(mode!),
               ),
               _buildDivider(),
-              _buildRadioTile<InputLogMode>(
-                title: 'Full-Mode',
-                subtitle: 'Log both your moves and opponent moves',
-                value: InputLogMode.fullMode,
-                groupValue: settings.inputLogMode,
+              _buildRadioTile<GameMode>(
+                title: 'Full Mode',
+                subtitle:
+                    'Log both moves manually. Engine suggests best moves via vibration.',
+                value: GameMode.full,
+                groupValue: settings.gameMode,
                 onChanged: (mode) =>
-                    ref.read(settingsProvider.notifier).setInputLogMode(mode!),
+                    ref.read(settingsProvider.notifier).setGameMode(mode!),
+              ),
+              _buildDivider(),
+              _buildRadioTile<GameMode>(
+                title: 'Feedback Mode',
+                subtitle:
+                    'Log both moves manually. Engine stays silent but vibrates on blunders and opportunities',
+                value: GameMode.feedback,
+                groupValue: settings.gameMode,
+                onChanged: (mode) =>
+                    ref.read(settingsProvider.notifier).setGameMode(mode!),
               ),
               _buildDivider(),
               const Padding(
@@ -176,6 +147,25 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     }
                   },
                 ),
+              ),
+              _buildDivider(),
+              SwitchListTile(
+                activeColor: white,
+                activeTrackColor: buttonColor,
+                title: const Text(
+                  'Rotate Board for Black',
+                  style: TextStyle(color: white, fontWeight: FontWeight.w600),
+                ),
+                subtitle: const Text(
+                  'Flip input and vibration patterns when playing as Black (h-a, 8-1)',
+                  style: TextStyle(color: Colors.white70, fontSize: 12),
+                ),
+                value: settings.rotateBoardForBlack,
+                onChanged: (value) {
+                  ref
+                      .read(settingsProvider.notifier)
+                      .setRotateBoardForBlack(value);
+                },
               ),
               const SizedBox(height: 12),
             ],
@@ -414,6 +404,42 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       groupValue: groupValue,
       onChanged: onChanged,
       dense: compact,
+    );
+  }
+
+  Widget _buildColorButton(Side side, bool isSelected, WidgetRef ref) {
+    return GestureDetector(
+      onTap: () {
+        ref.read(settingsProvider.notifier).setPlayingAs(side);
+      },
+      child: Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          color: side == Side.white ? Colors.white : Colors.black,
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: isSelected ? buttonColor : Colors.grey,
+            width: isSelected ? 3 : 1,
+          ),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: buttonColor.withOpacity(0.5),
+                    blurRadius: 8,
+                    spreadRadius: 2,
+                  ),
+                ]
+              : [],
+        ),
+        child: isSelected
+            ? Icon(
+                Icons.check,
+                color: side == Side.white ? Colors.black : Colors.white,
+                size: 24,
+              )
+            : null,
+      ),
     );
   }
 }

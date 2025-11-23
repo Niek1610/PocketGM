@@ -2,7 +2,7 @@ import 'package:dartchess/dartchess.dart';
 import 'package:flutter/foundation.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter_riverpod/legacy.dart';
-import 'package:pocketgm/models/input_log_mode.dart';
+import 'package:pocketgm/models/game_mode.dart';
 import 'package:pocketgm/models/input_mode.dart';
 import 'package:pocketgm/models/promotion_choice.dart';
 
@@ -16,6 +16,7 @@ class GameProvider extends ChangeNotifier {
   Move? _lastMove;
   bool _isGameStarted = false;
   double _currentEvaluation = 0.0;
+  double _previousEvaluation = 0.0;
 
   final stockfishService = StockfishService();
 
@@ -48,7 +49,7 @@ class GameProvider extends ChangeNotifier {
   Side get playingAs => _settings.playingAs;
   List<Move> get moveHistory => List.unmodifiable(_moveHistory);
   Move? get lastMove => _lastMove;
-  InputLogMode get inputLogMode => _settings.inputLogMode;
+  GameMode get gameMode => _settings.gameMode;
   InputMode get inputMode => _settings.inputMode;
   bool get isGameStarted => _isGameStarted;
   double get currentEvaluation => _currentEvaluation;
@@ -60,6 +61,8 @@ class GameProvider extends ChangeNotifier {
   }
 
   void _checkAndPlayBestMove() {
+    if (_settings.gameMode == GameMode.feedback) return;
+
     if (_position.turn == _settings.playingAs && !_position.isGameOver) {
       _getAndPlayBestMove();
     }
@@ -91,7 +94,7 @@ class GameProvider extends ChangeNotifier {
       final from = bestMove.substring(0, 2);
       final to = bestMove.substring(2, 4);
       sendUserMoveFeedback(from, to);
-      if (_settings.inputLogMode == InputLogMode.quickMode) {
+      if (_settings.gameMode == GameMode.quick) {
         makeMove(from, to);
       }
     }
@@ -154,6 +157,7 @@ class GameProvider extends ChangeNotifier {
         return false;
       }
 
+      _previousEvaluation = _currentEvaluation;
       _position = _position.play(move);
 
       _moveHistory.add(move);
@@ -161,8 +165,13 @@ class GameProvider extends ChangeNotifier {
 
       notifyListeners();
 
-      if (_position.turn == _settings.playingAs && !_position.isGameOver) {
-        _getAndPlayBestMove();
+      if (_settings.gameMode == GameMode.feedback) {
+        // Analyze the move for feedback
+        _analyzeMoveFeedback(_position.turn.opposite);
+      } else {
+        if (_position.turn == _settings.playingAs && !_position.isGameOver) {
+          _getAndPlayBestMove();
+        }
       }
 
       return true;
@@ -213,6 +222,42 @@ class GameProvider extends ChangeNotifier {
         await sendUserMoveFeedback(move.from.name, move.to.name);
       }
     }
+  }
+
+  Future<void> _analyzeMoveFeedback(Side sideThatMoved) async {
+    // Trigger a search to update evaluation
+    await getBestMoveUCI();
+
+    // Calculate eval from the perspective of the side that just moved
+    final evalAfter = _getEvalForSide(sideThatMoved, _currentEvaluation);
+    final evalBefore = _getEvalForSide(sideThatMoved, _previousEvaluation);
+
+    final diff = evalAfter - evalBefore;
+
+    // Thresholds
+    const blunderThreshold = -2.0;
+    const mistakeThreshold = -0.5;
+    const opponentBlunderThreshold = 2.0;
+
+    if (sideThatMoved == playingAs) {
+      if (diff < blunderThreshold) {
+        await VibrationService().feedbackBlunder();
+      } else if (diff < mistakeThreshold) {
+        await VibrationService().feedbackMistake();
+      } else {
+        await VibrationService().feedbackGood();
+      }
+    } else {
+      // Opponent moved. If their eval dropped significantly (my eval rose)
+      // diff is from Opponent's perspective.
+      if (diff < -opponentBlunderThreshold) {
+        await VibrationService().feedbackOpponentBlunder();
+      }
+    }
+  }
+
+  double _getEvalForSide(Side side, double evalWhite) {
+    return side == Side.white ? evalWhite : -evalWhite;
   }
 
   @override

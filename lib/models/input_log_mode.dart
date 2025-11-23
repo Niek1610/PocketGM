@@ -1,1 +1,0 @@
-enum InputLogMode { quickMode, fullMode }

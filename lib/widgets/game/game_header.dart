@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pocketgm/constants/colors..dart';
-import 'package:pocketgm/models/input_log_mode.dart';
+import 'package:pocketgm/models/game_mode.dart';
 import 'package:pocketgm/providers/game_provider.dart';
 import 'package:pocketgm/providers/input_provider.dart';
 import 'package:pocketgm/providers/settings_provider.dart';
@@ -14,7 +14,7 @@ class GameHeader extends ConsumerWidget {
     SettingsProvider settings,
   ) {
     final isUserTurn = gameState.sideToMove == gameState.playingAs;
-    final isQuickMode = settings.inputLogMode == InputLogMode.quickMode;
+    final isQuickMode = settings.gameMode == GameMode.quick;
 
     if (isUserTurn) {
       if (isQuickMode) {

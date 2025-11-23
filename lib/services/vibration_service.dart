@@ -115,6 +115,29 @@ class VibrationService {
     await vibratePattern(pattern, intensities: intensities);
   }
 
+  Future<void> feedbackBlunder() async {
+    // Long, heavy vibration (STOP!)
+    await vibratePattern([0, 1000], intensities: [0, 255]);
+  }
+
+  Future<void> feedbackMistake() async {
+    // Two quick pulses (Warning)
+    await vibratePattern([0, 100, 100, 100], intensities: [0, 200, 0, 200]);
+  }
+
+  Future<void> feedbackGood() async {
+    // Very short tick (Safe)
+    await vibrate(duration: 20);
+  }
+
+  Future<void> feedbackOpponentBlunder() async {
+    // Three quick pulses (Opportunity!)
+    await vibratePattern(
+      [0, 100, 50, 100, 50, 100],
+      intensities: [0, 255, 0, 255, 0, 255],
+    );
+  }
+
   Future<void> stop() async {
     if (await _hasVibrator) {
       Vibration.cancel();

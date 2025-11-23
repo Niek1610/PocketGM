@@ -2,12 +2,11 @@ import 'package:dartchess/dartchess.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pocketgm/constants/colors..dart';
-import 'package:pocketgm/models/input_log_mode.dart';
+import 'package:pocketgm/models/game_mode.dart';
 import 'package:pocketgm/models/input_mode.dart';
 import 'package:pocketgm/providers/game_provider.dart';
 import 'package:pocketgm/providers/input_provider.dart';
 import 'package:pocketgm/providers/settings_provider.dart';
-import 'package:pocketgm/widgets/primary_button.dart';
 
 class InputArea extends ConsumerWidget {
   const InputArea({super.key});
@@ -19,19 +18,20 @@ class InputArea extends ConsumerWidget {
     final gameState = ref.watch(gameProvider);
 
     final isUserTurn = gameState.sideToMove == gameState.playingAs;
-    final isQuickMode = settings.inputLogMode == InputLogMode.quickMode;
+    final isQuickMode = settings.gameMode == GameMode.quick;
     final isInputAllowed = !(isUserTurn && isQuickMode);
 
     return Container(
-      padding: const EdgeInsets.only(left: 32, right: 32, top: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
 
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildHeader(context, ref, settings),
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
           _buildContent(context, ref, inputMode, isInputAllowed, settings),
+          const SizedBox(height: 12), // Bottom padding
         ],
       ),
     );
@@ -45,46 +45,77 @@ class InputArea extends ConsumerWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        DropdownButton<InputMode>(
-          value: settings.inputMode,
-          dropdownColor: const Color.fromARGB(255, 42, 29, 54),
-          style: const TextStyle(color: white, fontWeight: FontWeight.bold),
-          underline: Container(height: 1, color: white.withOpacity(0.3)),
-          icon: const Icon(Icons.arrow_drop_down, color: white),
-          items: const [
-            DropdownMenuItem(value: InputMode.bleMode, child: Text("PocketGM")),
-            DropdownMenuItem(
-              value: InputMode.standaloneMode,
-              child: Text("Standalone"),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.08),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.white.withOpacity(0.1)),
+          ),
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<InputMode>(
+              value: settings.inputMode,
+              dropdownColor: const Color(0xFF2C2C2C),
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+              ),
+              icon: const Icon(
+                Icons.keyboard_arrow_down_rounded,
+                color: Colors.white70,
+                size: 20,
+              ),
+              isDense: true,
+              items: const [
+                DropdownMenuItem(
+                  value: InputMode.bleMode,
+                  child: Text("PocketGM"),
+                ),
+                DropdownMenuItem(
+                  value: InputMode.standaloneMode,
+                  child: Text("Standalone"),
+                ),
+                DropdownMenuItem(
+                  value: InputMode.interfaceMode,
+                  child: Text("Interface"),
+                ),
+              ],
+              onChanged: (value) {
+                if (value != null) {
+                  ref.read(settingsProvider.notifier).setInputMode(value);
+                }
+              },
             ),
-            DropdownMenuItem(
-              value: InputMode.interfaceMode,
-              child: Text("Interface"),
-            ),
-          ],
-          onChanged: (value) {
-            if (value != null) {
-              ref.read(settingsProvider.notifier).setInputMode(value);
-            }
-          },
+          ),
         ),
         if (settings.playingAs == Side.black)
-          Row(
-            children: [
-              Text(
-                "Rotate Input",
-                style: TextStyle(color: white.withOpacity(0.7), fontSize: 12),
+          Tooltip(
+            message: "Rotate Input Controls",
+            child: InkWell(
+              onTap: () {
+                ref
+                    .read(settingsProvider.notifier)
+                    .setRotateBoardForBlack(!settings.rotateBoardForBlack);
+              },
+              borderRadius: BorderRadius.circular(20),
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: settings.rotateBoardForBlack
+                      ? buttonColor.withOpacity(0.2)
+                      : Colors.transparent,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.rotate_right_rounded,
+                  color: settings.rotateBoardForBlack
+                      ? buttonColor
+                      : Colors.white54,
+                  size: 24,
+                ),
               ),
-              Switch(
-                value: settings.rotateBoardForBlack,
-                onChanged: (val) {
-                  ref
-                      .read(settingsProvider.notifier)
-                      .setRotateBoardForBlack(val);
-                },
-                activeColor: buttonColor,
-              ),
-            ],
+            ),
           ),
       ],
     );
@@ -107,38 +138,38 @@ class InputArea extends ConsumerWidget {
         return Row(
           children: [
             Expanded(
-              child: PrimaryButton(
+              child: _buildActionButton(
+                context,
+                label: "Increment",
+                icon: Icons.add_rounded,
                 onPressed: isInputAllowed
                     ? () => ref.read(inputProvider.notifier).increment()
-                    : () {},
+                    : null,
                 onLongPress: isInputAllowed
                     ? () => ref
                           .read(inputProvider.notifier)
                           .handleLongPressIncrement()
                     : null,
-                text: "Increment",
-
-                backgroundColor: isInputAllowed
-                    ? null
-                    : Colors.grey.withOpacity(0.3),
+                color: Colors.blueGrey.shade700,
+                isActive: isInputAllowed,
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 16),
             Expanded(
-              child: PrimaryButton(
+              child: _buildActionButton(
+                context,
+                label: "Confirm",
+                icon: Icons.check_rounded,
                 onPressed: isInputAllowed
                     ? () => ref.read(inputProvider.notifier).confirm()
-                    : () {},
+                    : null,
                 onLongPress: isInputAllowed
                     ? () => ref
                           .read(inputProvider.notifier)
                           .handleLongPressConfirm()
                     : null,
-                text: "Confirm",
-
-                backgroundColor: isInputAllowed
-                    ? null
-                    : Colors.grey.withOpacity(0.3),
+                color: buttonColor,
+                isActive: isInputAllowed,
               ),
             ),
           ],
@@ -147,9 +178,10 @@ class InputArea extends ConsumerWidget {
       case InputMode.standaloneMode:
         return _buildInstructionCard(
           context,
-          icon: Icons.volume_up,
+          icon: Icons.volume_up_rounded,
+          title: "Volume Control",
           text:
-              "Use volume buttons to input moves.\nColumns: $colRange\nRows: $rowRange",
+              "Use volume buttons to input moves.\nCols: $colRange | Rows: $rowRange",
         );
 
       case InputMode.bleMode:
@@ -157,42 +189,104 @@ class InputArea extends ConsumerWidget {
           children: [
             _buildInstructionCard(
               context,
-              icon: Icons.bluetooth,
+              icon: Icons.bluetooth_connected_rounded,
+              title: "Bluetooth Device",
               text:
-                  "Connect PocketGM device.\nColumns: $colRange\nRows: $rowRange",
-            ),
-            const SizedBox(height: 12),
-            PrimaryButton(
-              onPressed: () {},
-              text: "Connect Device",
-              height: 48,
-              backgroundColor: Colors.blue.withOpacity(0.2),
+                  "Connect PocketGM device.\nCols: $colRange | Rows: $rowRange",
             ),
           ],
         );
     }
   }
 
+  Widget _buildActionButton(
+    BuildContext context, {
+    required String label,
+    required IconData icon,
+    required VoidCallback? onPressed,
+    required VoidCallback? onLongPress,
+    required Color color,
+    required bool isActive,
+  }) {
+    return Material(
+      color: isActive ? color : color.withOpacity(0.3),
+      borderRadius: BorderRadius.circular(16),
+      child: InkWell(
+        onTap: onPressed,
+        onLongPress: onLongPress,
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                color: isActive ? Colors.white : Colors.white38,
+                size: 32,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                label,
+                style: TextStyle(
+                  color: isActive ? Colors.white : Colors.white38,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildInstructionCard(
     BuildContext context, {
     required IconData icon,
+    required String title,
     required String text,
   }) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: white.withOpacity(0.05),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: white.withOpacity(0.1)),
+        color: Colors.white.withOpacity(0.05),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.white.withOpacity(0.05)),
       ),
       child: Row(
         children: [
-          Icon(icon, color: white.withOpacity(0.7), size: 24),
-          const SizedBox(width: 12),
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: Colors.white70, size: 24),
+          ),
+          const SizedBox(width: 16),
           Expanded(
-            child: Text(
-              text,
-              style: TextStyle(color: white.withOpacity(0.9), height: 1.4),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  text,
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.6),
+                    fontSize: 13,
+                    height: 1.4,
+                  ),
+                ),
+              ],
             ),
           ),
         ],

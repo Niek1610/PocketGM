@@ -1,5 +1,5 @@
 import 'package:dartchess/dartchess.dart';
-import 'package:pocketgm/models/input_log_mode.dart';
+import 'package:pocketgm/models/game_mode.dart';
 import 'package:pocketgm/models/input_mode.dart';
 import 'package:pocketgm/models/vibration_speed.dart';
 import 'package:pocketgm/models/promotion_choice.dart';
@@ -27,13 +27,16 @@ class StorageService {
     await _prefs.setInt('color', color.index);
   }
 
-  Future<void> saveInputLogMode(InputLogMode mode) async {
-    await _prefs.setInt('input_log_mode', mode.index);
+  Future<void> saveGameMode(GameMode mode) async {
+    await _prefs.setInt('game_mode', mode.index);
   }
 
-  InputLogMode loadInputLogMode() {
-    final index = _prefs.getInt('input_log_mode') ?? 0;
-    return InputLogMode.values[index];
+  GameMode loadGameMode() {
+    final index = _prefs.getInt('game_mode') ?? 0;
+    if (index < 0 || index >= GameMode.values.length) {
+      return GameMode.quick;
+    }
+    return GameMode.values[index];
   }
 
   Future<void> saveInputMode(InputMode mode) async {
@@ -93,13 +96,5 @@ class StorageService {
       return PromotionChoice.queen;
     }
     return PromotionChoice.values[index];
-  }
-
-  Future<void> saveWakelock(bool value) async {
-    await _prefs.setBool('wakelock', value);
-  }
-
-  bool loadWakelock() {
-    return _prefs.getBool('wakelock') ?? false;
   }
 }

@@ -19,7 +19,6 @@ dependencies:
   stockfish: ^1.7.1
   vibration: ^3.1.4
   volume_controller: ^3.4.0
-  wakelock_plus: ^1.4.0
 
 dev_dependencies:
   flutter_test:
