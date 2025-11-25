@@ -1,31 +1,31 @@
 # PocketGM
 
-## 1. PRODUCTBESCHRIJVING
+## 1. PRODUCT DESCRIPTION
 
-Het Discrete Chess Analysis System is een technisch prototype dat real-time schaakanalyse mogelijk maakt tijdens over-the-board partijen. De kern van het systeem is een mobiele applicatie die Stockfish gebruikt voor positieanalyse.
+The Discrete Chess Analysis System is a technical prototype that enables real-time chess analysis during over-the-board games. The core of the system is a mobile application that uses Stockfish for position analysis.
 
-Na het invoeren van een zet analyseert de Stockfish engine de positie en stuurt binnen twee seconden feedback terug. Het doel is te demonstreren hoe mobile development en chess AI kunnen worden geïntegreerd in een werkend systeem.
+After entering a move, the Stockfish engine analyzes the position and sends feedback within two seconds. The goal is to demonstrate how mobile development and chess AI can be integrated into a working system.
 
-## 2. INSTALLATIE
+## 2. INSTALLATION
 
-Om dit project lokaal te draaien, volg je de onderstaande stappen:
+To run this project locally, follow the steps below:
 
-1. **Vereisten:** Zorg ervoor dat je [Flutter](https://flutter.dev/docs/get-started/install) geïnstalleerd hebt op je systeem.
-2. **Clone de repository:**
+1. **Prerequisites:** Ensure you have [Flutter](https://flutter.dev/docs/get-started/install) installed on your system.
+2. **Clone the repository:**
 
    ```bash
    git clone <repository-url>
    cd pocketgm
    ```
 
-3. **Installeer dependencies:**
+3. **Install dependencies:**
 
    ```bash
    flutter pub get
    ```
 
-4. **Start de applicatie:**
-   Sluit een apparaat aan of start een emulator en run:
+4. **Start the application:**
+   Connect a device or start an emulator and run:
 
    ```bash
    flutter run
