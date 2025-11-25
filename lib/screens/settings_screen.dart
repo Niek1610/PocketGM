@@ -68,6 +68,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                             .setStockfishDepth(value.toInt());
                       },
                     ),
+                    Text(
+                      'Lower = Faster response\nHigher = More accurate',
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 12,
+                      ),
+                    ),
                   ],
                 ),
               ),
