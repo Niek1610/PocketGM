@@ -16,6 +16,7 @@ dependencies:
   go_router: ^17.0.0
   http: ^1.6.0
   shared_preferences: ^2.5.3
+  stockfish: ^1.7.1
   vibration: ^3.1.4
   volume_controller: ^3.4.0
 

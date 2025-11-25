@@ -1,7 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
-import 'package:pocketgm/constants/colors..dart';
+import 'package:pocketgm/constants/colors.dart';
 
 class SelectButton extends StatelessWidget {
   final VoidCallback onPressed;

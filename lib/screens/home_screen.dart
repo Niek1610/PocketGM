@@ -1,22 +1,28 @@
+import 'package:dartchess/dartchess.dart';
 import 'package:flutter/material.dart';
-import 'package:pocketgm/constants/colors..dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:pocketgm/constants/colors.dart';
+import 'package:pocketgm/providers/game_provider.dart';
+import 'package:pocketgm/widgets/app_scaffold.dart';
 import 'package:pocketgm/widgets/primary_button.dart';
 import 'package:pocketgm/widgets/select_button.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  String _selectedColor = 'white';
-
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: primaryColor,
+    final gameState = ref.watch(gameProvider);
+    final playingAs = gameState.playingAs;
+
+    return AppScaffold(
+      showBackButton: false,
       body: Stack(
         children: [
           Opacity(
@@ -36,24 +42,21 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.only(
                 left: 32,
                 right: 32,
-                top: 64,
+                top: 32,
                 bottom: 64,
               ),
               child: Column(
                 children: [
-                  Container(
-                    margin: EdgeInsets.only(top: 64),
-                    child: Text(
-                      'PocketGM',
-                      style: Theme.of(
-                        context,
-                      ).textTheme.displayLarge!.copyWith(color: white),
-                    ),
+                  Text(
+                    'PocketGM',
+                    style: Theme.of(
+                      context,
+                    ).textTheme.displayLarge!.copyWith(color: white),
                   ),
                   SizedBox(height: 16),
                   Text(
                     textAlign: TextAlign.center,
-                    "een technisch prototype dat real-time schaakanalyse mogelijk maakt tijdens over-the-board partijen.",
+                    "a technical prototype that enables real-time chess analysis during over-the-board games.",
                     style: Theme.of(
                       context,
                     ).textTheme.bodyMedium!.copyWith(color: white),
@@ -75,24 +78,20 @@ class _HomeScreenState extends State<HomeScreen> {
                       Expanded(
                         child: SelectButton(
                           onPressed: () {
-                            setState(() {
-                              _selectedColor = 'white';
-                            });
+                            ref.read(gameProvider).setPlayingAs(Side.white);
                           },
                           isWhite: true,
-                          isSelected: _selectedColor == 'white',
+                          isSelected: playingAs == Side.white,
                         ),
                       ),
                       SizedBox(width: 16),
                       Expanded(
                         child: SelectButton(
                           onPressed: () {
-                            setState(() {
-                              _selectedColor = 'black';
-                            });
+                            ref.read(gameProvider).setPlayingAs(Side.black);
                           },
                           isWhite: false,
-                          isSelected: _selectedColor == 'black',
+                          isSelected: playingAs == Side.black,
                         ),
                       ),
                     ],
@@ -101,19 +100,25 @@ class _HomeScreenState extends State<HomeScreen> {
                   PrimaryButton(
                     text: "Play a new match",
                     icon: Icons.play_arrow_rounded,
-                    onPressed: () {},
+                    onPressed: () {
+                      context.push('/game');
+                    },
                   ),
                   Spacer(),
                   PrimaryButton(
                     text: "Options",
                     icon: Icons.settings_outlined,
-                    onPressed: () {},
+                    onPressed: () {
+                      context.push('/settings');
+                    },
                   ),
                   SizedBox(height: 16),
                   PrimaryButton(
                     text: "Documentation",
                     icon: Icons.article_outlined,
-                    onPressed: () {},
+                    onPressed: () {
+                      context.push('/documentation');
+                    },
                   ),
                 ],
               ),
