@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pocketgm/constants/colors..dart';
+import 'package:pocketgm/constants/colors.dart';
 import 'package:pocketgm/models/game_mode.dart';
 import 'package:pocketgm/providers/game_provider.dart';
 import 'package:pocketgm/providers/input_provider.dart';

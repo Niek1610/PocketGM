@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pocketgm/constants/colors..dart';
+import 'package:pocketgm/constants/colors.dart';
 
 class EvalBar extends StatelessWidget {
   final double score;

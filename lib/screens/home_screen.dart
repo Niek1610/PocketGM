@@ -2,7 +2,7 @@ import 'package:dartchess/dartchess.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pocketgm/constants/colors..dart';
+import 'package:pocketgm/constants/colors.dart';
 import 'package:pocketgm/providers/game_provider.dart';
 import 'package:pocketgm/widgets/app_scaffold.dart';
 import 'package:pocketgm/widgets/primary_button.dart';

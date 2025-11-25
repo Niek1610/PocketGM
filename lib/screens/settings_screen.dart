@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:pocketgm/constants/colors..dart';
+import 'package:pocketgm/constants/colors.dart';
 import 'package:pocketgm/models/game_mode.dart';
 import 'package:pocketgm/models/input_mode.dart';
 import 'package:pocketgm/models/promotion_choice.dart';

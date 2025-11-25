@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pocketgm/constants/colors..dart';
+import 'package:pocketgm/constants/colors.dart';
 import 'package:pocketgm/providers/bluetooth_provider.dart';
 import 'package:pocketgm/widgets/app_scaffold.dart';
 

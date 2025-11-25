@@ -76,6 +76,8 @@ class GameProvider extends ChangeNotifier {
   }
 
   Future<void> sendUserMoveFeedback(String from, String to) async {
+    // timeout zodat de vibraties nooit kunnen overlappen met andere inputfeedback vibraties
+    await Future.delayed(const Duration(seconds: 2));
     final isFlipped =
         _settings.playingAs == Side.black && _settings.rotateBoardForBlack;
     await VibrationService().feedbackMove(
@@ -93,6 +95,7 @@ class GameProvider extends ChangeNotifier {
       //split de move op naar "from" en "to"
       final from = bestMove.substring(0, 2);
       final to = bestMove.substring(2, 4);
+
       sendUserMoveFeedback(from, to);
       if (_settings.gameMode == GameMode.quick) {
         makeMove(from, to);
