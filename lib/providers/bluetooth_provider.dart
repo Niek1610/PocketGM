@@ -52,6 +52,7 @@ class BluetoothProvider extends ChangeNotifier {
     await stopScan();
 
     try {
+      await device.connect();
       _connectedDevice = device;
       notifyListeners();
 
