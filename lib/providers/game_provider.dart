@@ -1,6 +1,7 @@
 import 'package:dartchess/dartchess.dart';
 import 'package:flutter/foundation.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:pocketgm/models/game_mode.dart';
 import 'package:pocketgm/models/input_mode.dart';
@@ -9,6 +10,8 @@ import 'package:pocketgm/models/promotion_choice.dart';
 import 'package:pocketgm/providers/settings_provider.dart';
 import 'package:pocketgm/services/engine/stockfish.dart';
 import 'package:pocketgm/services/vibration_service.dart';
+
+enum GameResult { whiteWins, blackWins, draw, ongoing }
 
 class GameProvider extends ChangeNotifier {
   Position _position = Chess.initial;
@@ -53,6 +56,44 @@ class GameProvider extends ChangeNotifier {
   InputMode get inputMode => _settings.inputMode;
   bool get isGameStarted => _isGameStarted;
   double get currentEvaluation => _currentEvaluation;
+  bool get isGameOver => _position.isGameOver;
+  bool get isCheckmate => _position.isCheckmate;
+  bool get isStalemate => _position.isStalemate;
+
+  GameResult get gameResult {
+    if (!_position.isGameOver) return GameResult.ongoing;
+    if (_position.isCheckmate) {
+      // The side to move is checkmated, so the other side wins
+      return _position.turn == Side.white
+          ? GameResult.blackWins
+          : GameResult.whiteWins;
+    }
+    return GameResult.draw;
+  }
+
+  String get gameResultMessage {
+    switch (gameResult) {
+      case GameResult.whiteWins:
+        return 'White wins by checkmate!';
+      case GameResult.blackWins:
+        return 'Black wins by checkmate!';
+      case GameResult.draw:
+        if (_position.isStalemate) return 'Draw by stalemate';
+        if (_position.isInsufficientMaterial)
+          return 'Draw by insufficient material';
+        return 'Draw';
+      case GameResult.ongoing:
+        return '';
+    }
+  }
+
+  bool get didPlayerWin {
+    if (gameResult == GameResult.whiteWins && _settings.playingAs == Side.white)
+      return true;
+    if (gameResult == GameResult.blackWins && _settings.playingAs == Side.black)
+      return true;
+    return false;
+  }
 
   void startGame() {
     _isGameStarted = true;
@@ -228,16 +269,13 @@ class GameProvider extends ChangeNotifier {
   }
 
   Future<void> _analyzeMoveFeedback(Side sideThatMoved) async {
-    // Trigger a search to update evaluation
     await getBestMoveUCI();
 
-    // Calculate eval from the perspective of the side that just moved
     final evalAfter = _getEvalForSide(sideThatMoved, _currentEvaluation);
     final evalBefore = _getEvalForSide(sideThatMoved, _previousEvaluation);
 
     final diff = evalAfter - evalBefore;
 
-    // Thresholds
     const blunderThreshold = -2.0;
     const mistakeThreshold = -0.5;
     const opponentBlunderThreshold = 2.0;
@@ -251,8 +289,6 @@ class GameProvider extends ChangeNotifier {
         await VibrationService().feedbackGood();
       }
     } else {
-      // Opponent moved. If their eval dropped significantly (my eval rose)
-      // diff is from Opponent's perspective.
       if (diff < -opponentBlunderThreshold) {
         await VibrationService().feedbackOpponentBlunder();
       }

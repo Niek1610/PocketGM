@@ -2,7 +2,6 @@ import 'package:dartchess/dartchess.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pocketgm/constants/colors.dart';
 import 'package:pocketgm/providers/game_provider.dart';
 import 'package:pocketgm/providers/settings_provider.dart';
 import 'package:pocketgm/services/engine/stockfish.dart';
@@ -11,8 +10,9 @@ import 'package:pocketgm/widgets/app_scaffold.dart';
 import 'package:pocketgm/widgets/game/eval_bar.dart';
 import 'package:pocketgm/widgets/game/game_board.dart';
 import 'package:pocketgm/widgets/game/game_header.dart';
+import 'package:pocketgm/widgets/game/game_over_overlay.dart';
 import 'package:pocketgm/widgets/game/input_area.dart';
-import 'package:pocketgm/widgets/primary_button.dart';
+import 'package:pocketgm/widgets/game/start_game_overlay.dart';
 
 class GameScreen extends ConsumerStatefulWidget {
   const GameScreen({super.key});
@@ -109,77 +109,9 @@ class _GameScreenState extends ConsumerState<GameScreen> {
               ),
             ],
           ),
-          if (!gameState.isGameStarted)
-            Container(
-              color: Colors.black.withOpacity(0.85),
-
-              child: Center(
-                child: Container(
-                  padding: const EdgeInsets.all(32),
-                  margin: EdgeInsets.only(left: 32, right: 32),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF1E1E1E),
-                    borderRadius: BorderRadius.circular(24),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.5),
-                        blurRadius: 20,
-                        offset: const Offset(0, 10),
-                      ),
-                    ],
-                    border: Border.all(
-                      color: Colors.white.withOpacity(0.1),
-                      width: 1,
-                    ),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(
-                        Icons.play_circle_fill_rounded,
-                        size: 64,
-                        color: Colors.white,
-                      ),
-                      const SizedBox(height: 24),
-                      Text(
-                        "Ready to play?",
-                        style: Theme.of(context).textTheme.headlineSmall!
-                            .copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        "Playing as ${gameState.playingAs.name[0].toUpperCase()}${gameState.playingAs.name.substring(1)}",
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(0.6),
-                          fontSize: 16,
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-                      Text(
-                        "Improve your game with real-time analysis and feedback.",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(0.8),
-                          fontSize: 14,
-                        ),
-                      ),
-                      const SizedBox(height: 32),
-                      PrimaryButton(
-                        text: "Start Game",
-                        onPressed: () {
-                          ref.read(gameProvider).startGame();
-                        },
-                        width: 200,
-                        backgroundColor: buttonColor,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+          if (gameState.isGameOver && gameState.isGameStarted)
+            const GameOverOverlay(),
+          if (!gameState.isGameStarted) const StartGameOverlay(),
         ],
       ),
     );

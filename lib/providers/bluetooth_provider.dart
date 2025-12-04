@@ -62,9 +62,7 @@ class BluetoothProvider extends ChangeNotifier {
       ) {
         _connectionState = connectionState;
         notifyListeners();
-        if (connectionState == BluetoothConnectionState.disconnected) {
-          // Handle disconnection if needed
-        }
+        if (connectionState == BluetoothConnectionState.disconnected) {}
       });
     } catch (e) {
       print('Error connecting: $e');
