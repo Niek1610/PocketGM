@@ -2,6 +2,7 @@ import 'package:dartchess/dartchess.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pocketgm/providers/bluetooth_provider.dart';
 import 'package:pocketgm/providers/game_provider.dart';
 import 'package:pocketgm/providers/settings_provider.dart';
 import 'package:pocketgm/services/engine/stockfish.dart';
@@ -28,6 +29,9 @@ class _GameScreenState extends ConsumerState<GameScreen> {
   void initState() {
     super.initState();
     _initializeStockfish();
+    // Connect VibrationService to BluetoothProvider for ESP32 support
+    final btProvider = ref.read(bluetoothProvider);
+    VibrationService().setBluetoothProvider(btProvider);
   }
 
   @override

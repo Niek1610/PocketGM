@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'package:dartchess/dartchess.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:pocketgm/models/input_mode.dart';
+import 'package:pocketgm/providers/bluetooth_provider.dart';
 import 'package:pocketgm/providers/game_provider.dart';
 import 'package:pocketgm/providers/settings_provider.dart';
 import 'package:pocketgm/services/vibration_service.dart';
@@ -11,9 +13,11 @@ class InputProvider extends ChangeNotifier {
   final dynamic _ref;
 
   bool _disposed = false;
+  StreamSubscription<ButtonEvent>? _buttonSubscription;
 
   InputProvider(this._ref) {
     _initVolumeListener();
+    _initBleListener();
   }
 
   Future<void> _initVolumeListener() async {
@@ -42,9 +46,26 @@ class InputProvider extends ChangeNotifier {
     });
   }
 
+  void _initBleListener() {
+    final bluetoothProv = _ref.read(bluetoothProvider) as BluetoothProvider;
+    _buttonSubscription = bluetoothProv.buttonEvents.listen((event) {
+      if (_disposed) return;
+
+      final inputMode = _ref.read(settingsProvider).inputMode;
+      if (inputMode != InputMode.bleMode) return;
+
+      if (event == ButtonEvent.button1) {
+        increment();
+      } else if (event == ButtonEvent.button2) {
+        confirm();
+      }
+    });
+  }
+
   @override
   void dispose() {
     _disposed = true;
+    _buttonSubscription?.cancel();
     VolumeController.instance.removeListener();
     super.dispose();
   }
