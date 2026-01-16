@@ -4,6 +4,7 @@ import 'package:pocketgm/screens/bluetooth_screen.dart';
 import 'package:pocketgm/screens/documentation_screen.dart';
 import 'package:pocketgm/screens/game_screen.dart';
 import 'package:pocketgm/screens/home_screen.dart';
+import 'package:pocketgm/screens/openings_screen.dart';
 import 'package:pocketgm/screens/settings_screen.dart';
 
 final goRouterProvider = Provider<GoRouter>((ref) {
@@ -32,6 +33,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         path: '/bluetooth',
         pageBuilder: (context, state) =>
             NoTransitionPage(child: BluetoothScreen()),
+      ),
+      GoRoute(
+        path: '/openings',
+        pageBuilder: (context, state) =>
+            NoTransitionPage(child: OpeningsScreen()),
       ),
     ],
   );
