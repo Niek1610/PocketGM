@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'package:dartchess/dartchess.dart';
 import 'package:pocketgm/models/game_mode.dart';
 import 'package:pocketgm/models/input_mode.dart';
+import 'package:pocketgm/models/opening.dart';
 import 'package:pocketgm/models/vibration_speed.dart';
 import 'package:pocketgm/models/promotion_choice.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -104,5 +106,29 @@ class StorageService {
 
   bool loadAllowTouchInput() {
     return _prefs.getBool('allow_touch_input') ?? true;
+  }
+
+  Future<void> saveCustomOpenings(List<Opening> openings) async {
+    final jsonList = openings.map((o) => o.toJson()).toList();
+    await _prefs.setString('custom_openings', jsonEncode(jsonList));
+  }
+
+  List<Opening> loadCustomOpenings() {
+    final jsonString = _prefs.getString('custom_openings');
+    if (jsonString == null) return [];
+    try {
+      final jsonList = jsonDecode(jsonString) as List;
+      return jsonList.map((json) {
+        return Opening.fromJson(json as Map<String, dynamic>);
+      }).toList();
+    } catch (e) {
+      return [];
+    }
+  }
+
+  dynamic _openingFromJson(Map<String, dynamic> json) {
+    // This will be called with the Opening.fromJson factory
+    // We return a map that can be converted later
+    return json;
   }
 }

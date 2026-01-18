@@ -62,35 +62,59 @@ class _BluetoothScreenState extends ConsumerState<BluetoothScreen> {
             Container(
               padding: const EdgeInsets.all(16),
               color: Colors.green.withOpacity(0.2),
-              child: Row(
+              child: Column(
                 children: [
-                  const Icon(Icons.bluetooth_connected, color: Colors.green),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Connected to:',
-                          style: TextStyle(color: Colors.white70, fontSize: 12),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.bluetooth_connected,
+                        color: Colors.green,
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Connected to:',
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 12,
+                              ),
+                            ),
+                            Text(
+                              bluetooth.connectedDevice!.platformName.isNotEmpty
+                                  ? bluetooth.connectedDevice!.platformName
+                                  : bluetooth.connectedDevice!.remoteId
+                                        .toString(),
+                              style: const TextStyle(
+                                color: white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         ),
-                        Text(
-                          bluetooth.connectedDevice!.platformName.isNotEmpty
-                              ? bluetooth.connectedDevice!.platformName
-                              : bluetooth.connectedDevice!.remoteId.toString(),
-                          style: const TextStyle(
-                            color: white,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      ),
+                      TextButton(
+                        onPressed: () =>
+                            ref.read(bluetoothProvider).disconnect(),
+                        child: const Text(
+                          'Disconnect',
+                          style: TextStyle(color: Colors.redAccent),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  TextButton(
-                    onPressed: () => ref.read(bluetoothProvider).disconnect(),
-                    child: const Text(
-                      'Disconnect',
-                      style: TextStyle(color: Colors.redAccent),
+                  const SizedBox(height: 12),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      ref.read(bluetoothProvider).sendVibration(500);
+                    },
+                    icon: const Icon(Icons.vibration),
+                    label: const Text('Test Motor (500ms)'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.orange,
+                      foregroundColor: Colors.white,
                     ),
                   ),
                 ],
