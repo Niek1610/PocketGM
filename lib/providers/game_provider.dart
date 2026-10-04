@@ -102,6 +102,7 @@ class GameProvider extends ChangeNotifier {
   }
 
   void _checkAndPlayBestMove() {
+    if (!stockfishService.isStockfishInitialized) return;
     if (_settings.gameMode == GameMode.feedback) return;
 
     if (_position.turn == _settings.playingAs && !_position.isGameOver) {
@@ -110,6 +111,7 @@ class GameProvider extends ChangeNotifier {
   }
 
   Future<String?> getBestMoveUCI() async {
+    if (!stockfishService.isStockfishInitialized) return null;
     return await stockfishService.getBestMove(
       fen,
       depth: _settings.stockfishDepth,
@@ -213,9 +215,7 @@ class GameProvider extends ChangeNotifier {
         // Analyze the move for feedback
         _analyzeMoveFeedback(_position.turn.opposite);
       } else {
-        if (_position.turn == _settings.playingAs && !_position.isGameOver) {
-          _getAndPlayBestMove();
-        }
+        _checkAndPlayBestMove();
       }
 
       return true;

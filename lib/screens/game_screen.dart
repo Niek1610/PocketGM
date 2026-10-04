@@ -47,6 +47,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
 
   Future<void> _initializeStockfish() async {
     await stockfishService.init();
+    if (!mounted) return;
     ref.read(gameProvider).onStockfishReady();
   }
 

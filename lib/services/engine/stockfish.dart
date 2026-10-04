@@ -12,13 +12,20 @@ class StockfishService {
   //laatste beste zet
   String? _lastBestMove;
   bool isStockfishInitialized = false;
+  Future<void>? _initialization;
 
   final _evaluationController = StreamController<double>.broadcast();
   Stream<double> get evaluationStream => _evaluationController.stream;
 
-  Future<void> init() async {
-    if (isStockfishInitialized) return;
-    stockfish = Stockfish();
+  Future<void> init() {
+    if (isStockfishInitialized) return Future.value();
+    return _initialization ??= _initialize().whenComplete(() {
+      _initialization = null;
+    });
+  }
+
+  Future<void> _initialize() async {
+    stockfish ??= Stockfish();
     //wachten op stockfish
     while (stockfish!.state.value != StockfishState.ready) {
       await Future.delayed(const Duration(milliseconds: 100));
@@ -77,6 +84,10 @@ class StockfishService {
   }
 
   Future<String?> getBestMove(String fen, {int depth = 20}) async {
+    if (!isStockfishInitialized ||
+        stockfish?.state.value != StockfishState.ready) {
+      return null;
+    }
     //laaste beste zet resetten
     _lastBestMove = null;
 
