@@ -23,7 +23,7 @@ class GameOverOverlay extends ConsumerWidget {
             _getTitle(gameState),
             style: Theme.of(context).textTheme.headlineSmall!.copyWith(
               color: Colors.white,
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: 8),
@@ -47,7 +47,7 @@ class GameOverOverlay extends ConsumerWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               PrimaryButton(
-                text: "New Game",
+                text: "New game",
                 onPressed: () {
                   ref.read(gameProvider).resetGame();
                   ref.read(gameProvider).startGame();
@@ -93,11 +93,11 @@ class GameOverOverlay extends ConsumerWidget {
 
   String _getTitle(GameProvider gameState) {
     if (gameState.didPlayerWin) {
-      return "You Win!";
+      return "You won";
     }
     if (gameState.gameResult == GameResult.draw) {
-      return "It's a Draw!";
+      return "Draw";
     }
-    return "You Lose";
+    return "You lost";
   }
 }

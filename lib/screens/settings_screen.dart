@@ -25,6 +25,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final bluetooth = ref.watch(bluetoothProvider);
 
     return AppScaffold(
+      title: 'Settings',
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
@@ -43,7 +44,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text(
-                          'Stockfish Depth',
+                          'Stockfish depth',
                           style: TextStyle(
                             color: white,
                             fontWeight: FontWeight.w600,
@@ -69,7 +70,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       },
                     ),
                     Text(
-                      'Lower = Faster response\nHigher = More accurate',
+                      'Lower values are faster; higher values improve accuracy.',
                       style: const TextStyle(
                         color: Colors.white70,
                         fontSize: 12,
@@ -81,20 +82,20 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ],
           ),
           const SizedBox(height: 24),
-          _buildSectionHeader('Game Settings'),
+          _buildSectionHeader('Game'),
           _buildSection(
             children: [
               const Padding(
                 padding: EdgeInsets.fromLTRB(16, 12, 16, 4),
                 child: Text(
-                  'Game Mode',
+                  'Game mode',
                   style: TextStyle(color: white, fontWeight: FontWeight.w600),
                 ),
               ),
               _buildRadioTile<GameMode>(
-                title: 'Quick Mode',
+                title: 'Quick mode',
                 subtitle:
-                    'Only log opponent moves. Assumes you only play suggested moves via vibration',
+                    'Enter your opponent\'s moves and follow the vibration suggestions for your own.',
                 value: GameMode.quick,
                 groupValue: settings.gameMode,
                 onChanged: (mode) =>
@@ -102,9 +103,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ),
               _buildDivider(),
               _buildRadioTile<GameMode>(
-                title: 'Full Mode',
+                title: 'Full mode',
                 subtitle:
-                    'Log both moves manually. Engine suggests best moves via vibration.',
+                    'Enter both players\' moves. Vibrations suggest your next move.',
                 value: GameMode.full,
                 groupValue: settings.gameMode,
                 onChanged: (mode) =>
@@ -112,9 +113,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ),
               _buildDivider(),
               _buildRadioTile<GameMode>(
-                title: 'Feedback Mode',
+                title: 'Feedback mode',
                 subtitle:
-                    'Log both moves manually. Engine stays silent but vibrates on blunders and opportunities',
+                    'Enter both players\' moves. Vibrations flag blunders and opportunities.',
                 value: GameMode.feedback,
                 groupValue: settings.gameMode,
                 onChanged: (mode) =>
@@ -124,7 +125,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               const Padding(
                 padding: EdgeInsets.fromLTRB(16, 12, 16, 4),
                 child: Text(
-                  'Pawn Promotion',
+                  'Pawn promotion',
                   style: TextStyle(color: white, fontWeight: FontWeight.w600),
                 ),
               ),
@@ -160,11 +161,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 activeColor: white,
                 activeTrackColor: buttonColor,
                 title: const Text(
-                  'Rotate Board for Black',
+                  'Rotate board for black',
                   style: TextStyle(color: white, fontWeight: FontWeight.w600),
                 ),
                 subtitle: const Text(
-                  'Flip input and vibration patterns when playing as Black (h-a, 8-1)',
+                  'Reverse input and vibration coordinates (h–a, 8–1).',
                   style: TextStyle(color: Colors.white70, fontSize: 12),
                 ),
                 value: settings.rotateBoardForBlack,
@@ -178,11 +179,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ],
           ),
           const SizedBox(height: 24),
-          _buildSectionHeader('Input Mode'),
+          _buildSectionHeader('Input'),
           _buildSection(
             children: [
               _buildRadioTile<InputMode>(
-                title: 'PocketGM (BLE Device)',
+                title: 'PocketGM device',
                 value: InputMode.bleMode,
                 groupValue: settings.inputMode,
                 onChanged: (mode) =>
@@ -214,7 +215,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       bluetooth.connectedDevice != null
                           ? (bluetooth.connectedDevice!.platformName.isNotEmpty
                                 ? bluetooth.connectedDevice!.platformName
-                                : "Connected Device")
+                                : 'Connected device')
                           : 'Not connected',
                       style: TextStyle(
                         color: bluetooth.connectedDevice != null
@@ -233,7 +234,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 ),
               _buildDivider(),
               _buildRadioTile<InputMode>(
-                title: 'Standalone (Mobile Volume Buttons)',
+                title: 'Phone volume buttons',
                 value: InputMode.standaloneMode,
                 groupValue: settings.inputMode,
                 onChanged: (mode) =>
@@ -241,7 +242,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ),
               _buildDivider(),
               _buildRadioTile<InputMode>(
-                title: 'Interface (On-screen buttons)',
+                title: 'On-screen buttons',
                 value: InputMode.interfaceMode,
                 groupValue: settings.inputMode,
                 onChanged: (mode) =>
@@ -252,11 +253,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 activeColor: white,
                 activeTrackColor: buttonColor,
                 title: const Text(
-                  'Allow Board Touch Input',
+                  'Touch input',
                   style: TextStyle(color: white, fontWeight: FontWeight.w600),
                 ),
                 subtitle: const Text(
-                  'Enable moving pieces by dragging on the board',
+                  'Drag pieces on the board to enter moves.',
                   style: TextStyle(color: Colors.white70, fontSize: 12),
                 ),
                 value: settings.allowTouchInput,
@@ -314,7 +315,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               const Padding(
                 padding: EdgeInsets.fromLTRB(16, 12, 16, 4),
                 child: Text(
-                  'Pattern Speed',
+                  'Pattern speed',
                   style: TextStyle(color: white, fontWeight: FontWeight.w600),
                 ),
               ),
@@ -368,12 +369,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0, left: 4.0),
       child: Text(
-        title.toUpperCase(),
+        title,
         style: const TextStyle(
           color: Colors.white60,
-          fontSize: 12,
-          fontWeight: FontWeight.bold,
-          letterSpacing: 1.2,
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );

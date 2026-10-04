@@ -46,46 +46,46 @@ class AppTextTheme {
       titleMedium: TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.w500,
-        letterSpacing: 0.15,
+        letterSpacing: 0,
       ),
       titleSmall: TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.w500,
-        letterSpacing: 0.1,
+        letterSpacing: 0,
       ),
 
       // Body styles are used for longer passages of text.
       bodyLarge: TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.normal,
-        letterSpacing: 0.5,
+        letterSpacing: 0,
       ),
       bodyMedium: TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.normal,
-        letterSpacing: 0.25,
+        letterSpacing: 0,
       ),
       bodySmall: TextStyle(
         fontSize: 12,
         fontWeight: FontWeight.normal,
-        letterSpacing: 0.4,
+        letterSpacing: 0,
       ),
 
       // Label styles are smaller, utilitarian styles, used for things like the text inside components or for very small text in the content body.
       labelLarge: TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.w500,
-        letterSpacing: 0.1,
+        letterSpacing: 0,
       ),
       labelMedium: TextStyle(
         fontSize: 12,
         fontWeight: FontWeight.w500,
-        letterSpacing: 0.5,
+        letterSpacing: 0,
       ),
       labelSmall: TextStyle(
         fontSize: 11,
         fontWeight: FontWeight.w500,
-        letterSpacing: 0.5,
+        letterSpacing: 0,
       ),
     );
   }

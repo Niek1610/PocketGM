@@ -127,8 +127,6 @@ class StorageService {
   }
 
   dynamic _openingFromJson(Map<String, dynamic> json) {
-    // This will be called with the Opening.fromJson factory
-    // We return a map that can be converted later
     return json;
   }
 }

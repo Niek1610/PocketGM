@@ -19,18 +19,16 @@ class _OpeningsScreenState extends ConsumerState<OpeningsScreen> {
     final openingsState = ref.watch(openingsProvider);
 
     return AppScaffold(
-      title: 'Openingszetten',
+      title: 'Openingen',
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          // Selected Opening Info
           if (openingsState.selectedOpening != null) ...[
             _buildSelectedOpeningCard(openingsState),
             const SizedBox(height: 24),
           ],
 
-          // Standard Openings
-          _buildSectionHeader('Standaard Openingen'),
+          _buildSectionHeader('Standaard openingen'),
           _buildSection(
             children: DefaultOpenings.all
                 .map((opening) => _buildOpeningTile(opening, openingsState))
@@ -38,23 +36,23 @@ class _OpeningsScreenState extends ConsumerState<OpeningsScreen> {
           ),
           const SizedBox(height: 24),
 
-          // Custom Openings
-          _buildSectionHeader('Aangepaste Openingen'),
+          _buildSectionHeader('Eigen openingen'),
           if (openingsState.customOpenings.isEmpty)
             _buildEmptyCustomSection()
           else
             _buildSection(
               children: openingsState.customOpenings
-                  .map((opening) => _buildOpeningTile(
-                        opening,
-                        openingsState,
-                        isCustom: true,
-                      ))
+                  .map(
+                    (opening) => _buildOpeningTile(
+                      opening,
+                      openingsState,
+                      isCustom: true,
+                    ),
+                  )
                   .toList(),
             ),
           const SizedBox(height: 16),
 
-          // Add Custom Opening Button
           _buildAddButton(),
           const SizedBox(height: 40),
         ],
@@ -68,10 +66,7 @@ class _OpeningsScreenState extends ConsumerState<OpeningsScreen> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            buttonColor.withOpacity(0.4),
-            buttonColor.withOpacity(0.2),
-          ],
+          colors: [buttonColor.withOpacity(0.4), buttonColor.withOpacity(0.2)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -86,11 +81,11 @@ class _OpeningsScreenState extends ConsumerState<OpeningsScreen> {
               Icon(Icons.check_circle, color: buttonColor, size: 20),
               const SizedBox(width: 8),
               const Text(
-                'Geselecteerde Opening',
+                'Geselecteerde opening',
                 style: TextStyle(
                   color: Colors.white70,
                   fontSize: 12,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ],
@@ -101,7 +96,7 @@ class _OpeningsScreenState extends ConsumerState<OpeningsScreen> {
             style: const TextStyle(
               color: Colors.white,
               fontSize: 18,
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: 4),
@@ -132,8 +127,10 @@ class _OpeningsScreenState extends ConsumerState<OpeningsScreen> {
                 label: const Text('Deselecteren'),
                 style: TextButton.styleFrom(
                   foregroundColor: Colors.white70,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 4,
+                  ),
                 ),
               ),
             ],
@@ -147,12 +144,11 @@ class _OpeningsScreenState extends ConsumerState<OpeningsScreen> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0, left: 4.0),
       child: Text(
-        title.toUpperCase(),
+        title,
         style: const TextStyle(
           color: Colors.white60,
-          fontSize: 12,
-          fontWeight: FontWeight.bold,
-          letterSpacing: 1.2,
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );
@@ -165,9 +161,7 @@ class _OpeningsScreenState extends ConsumerState<OpeningsScreen> {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.white10),
       ),
-      child: Column(
-        children: children,
-      ),
+      child: Column(children: children),
     );
   }
 
@@ -181,15 +175,15 @@ class _OpeningsScreenState extends ConsumerState<OpeningsScreen> {
     return Column(
       children: [
         ListTile(
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 8,
+          ),
           leading: Container(
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: isSelected
-                  ? buttonColor
-                  : Colors.white.withOpacity(0.1),
+              color: isSelected ? buttonColor : Colors.white.withOpacity(0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(
@@ -225,14 +219,14 @@ class _OpeningsScreenState extends ConsumerState<OpeningsScreen> {
               const SizedBox(width: 8),
               if (isCustom)
                 IconButton(
-                  icon: const Icon(Icons.delete_outline,
-                      color: Colors.white38, size: 20),
+                  icon: const Icon(
+                    Icons.delete_outline,
+                    color: Colors.white38,
+                    size: 20,
+                  ),
                   onPressed: () => _confirmDelete(opening),
                 ),
-              Icon(
-                Icons.chevron_right,
-                color: Colors.white.withOpacity(0.3),
-              ),
+              Icon(Icons.chevron_right, color: Colors.white.withOpacity(0.3)),
             ],
           ),
           onTap: () {
@@ -265,7 +259,7 @@ class _OpeningsScreenState extends ConsumerState<OpeningsScreen> {
           ),
           const SizedBox(height: 12),
           Text(
-            'Geen aangepaste openingen',
+            'Nog geen eigen openingen',
             style: TextStyle(
               color: Colors.white.withOpacity(0.6),
               fontSize: 14,
@@ -273,7 +267,7 @@ class _OpeningsScreenState extends ConsumerState<OpeningsScreen> {
           ),
           const SizedBox(height: 4),
           Text(
-            'Voeg je eigen openingen toe',
+            'Voeg een opening toe om die te bewaren.',
             style: TextStyle(
               color: Colors.white.withOpacity(0.4),
               fontSize: 12,
@@ -299,10 +293,10 @@ class _OpeningsScreenState extends ConsumerState<OpeningsScreen> {
               Icon(Icons.add, color: Colors.white),
               SizedBox(width: 8),
               Text(
-                'Nieuwe Opening Toevoegen',
+                'Opening toevoegen',
                 style: TextStyle(
                   color: Colors.white,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
                   fontSize: 16,
                 ),
               ),
@@ -324,7 +318,7 @@ class _OpeningsScreenState extends ConsumerState<OpeningsScreen> {
         backgroundColor: const Color(0xFF1E1E1E),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Text(
-          'Nieuwe Opening',
+          'Nieuwe opening',
           style: TextStyle(color: Colors.white),
         ),
         content: SingleChildScrollView(
@@ -338,7 +332,9 @@ class _OpeningsScreenState extends ConsumerState<OpeningsScreen> {
                   labelText: 'Naam',
                   labelStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white.withOpacity(0.3)),
+                    borderSide: BorderSide(
+                      color: Colors.white.withOpacity(0.3),
+                    ),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   focusedBorder: OutlineInputBorder(
@@ -355,7 +351,9 @@ class _OpeningsScreenState extends ConsumerState<OpeningsScreen> {
                   labelText: 'Beschrijving',
                   labelStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white.withOpacity(0.3)),
+                    borderSide: BorderSide(
+                      color: Colors.white.withOpacity(0.3),
+                    ),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   focusedBorder: OutlineInputBorder(
@@ -370,12 +368,14 @@ class _OpeningsScreenState extends ConsumerState<OpeningsScreen> {
                 style: const TextStyle(color: Colors.white),
                 maxLines: 3,
                 decoration: InputDecoration(
-                  labelText: 'Zetten (UCI formaat)',
+                  labelText: 'Zetten',
                   hintText: 'e2e4, e7e5, g1f3',
                   hintStyle: TextStyle(color: Colors.white.withOpacity(0.3)),
                   labelStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white.withOpacity(0.3)),
+                    borderSide: BorderSide(
+                      color: Colors.white.withOpacity(0.3),
+                    ),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   focusedBorder: OutlineInputBorder(
@@ -386,7 +386,7 @@ class _OpeningsScreenState extends ConsumerState<OpeningsScreen> {
               ),
               const SizedBox(height: 8),
               Text(
-                'Voer zetten in UCI formaat in, gescheiden door komma\'s.\nBijvoorbeeld: e2e4, e7e5, g1f3',
+                'Gebruik coördinaten, gescheiden door komma\'s.\nBijvoorbeeld: e2e4, e7e5, g1f3',
                 style: TextStyle(
                   color: Colors.white.withOpacity(0.5),
                   fontSize: 12,
@@ -418,7 +418,7 @@ class _OpeningsScreenState extends ConsumerState<OpeningsScreen> {
               if (name.isEmpty || movesText.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: Text('Vul naam en zetten in'),
+                    content: Text('Vul een naam en de zetten in.'),
                     backgroundColor: Colors.red,
                   ),
                 );
@@ -434,7 +434,9 @@ class _OpeningsScreenState extends ConsumerState<OpeningsScreen> {
               if (moves.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: Text('Ongeldige zetten. Gebruik UCI formaat (bijv. e2e4)'),
+                    content: Text(
+                      'Ongeldige zetten. Gebruik coördinaten, zoals e2e4.',
+                    ),
                     backgroundColor: Colors.red,
                   ),
                 );
@@ -468,11 +470,11 @@ class _OpeningsScreenState extends ConsumerState<OpeningsScreen> {
         backgroundColor: const Color(0xFF1E1E1E),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Text(
-          'Opening Verwijderen',
+          'Opening verwijderen',
           style: TextStyle(color: Colors.white),
         ),
         content: Text(
-          'Weet je zeker dat je "${opening.name}" wilt verwijderen?',
+          'Wil je "${opening.name}" verwijderen?',
           style: TextStyle(color: Colors.white.withOpacity(0.8)),
         ),
         actions: [
@@ -491,7 +493,9 @@ class _OpeningsScreenState extends ConsumerState<OpeningsScreen> {
               ),
             ),
             onPressed: () {
-              ref.read(openingsProvider.notifier).removeCustomOpening(opening.id);
+              ref
+                  .read(openingsProvider.notifier)
+                  .removeCustomOpening(opening.id);
               Navigator.pop(context);
             },
             child: const Text(

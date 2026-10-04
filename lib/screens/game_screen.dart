@@ -1,12 +1,9 @@
 import 'package:dartchess/dartchess.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:pocketgm/providers/bluetooth_provider.dart';
 import 'package:pocketgm/providers/game_provider.dart';
-import 'package:pocketgm/providers/openings_provider.dart';
 import 'package:pocketgm/providers/settings_provider.dart';
-import 'package:pocketgm/providers/visualization_provider.dart';
 import 'package:pocketgm/services/engine/stockfish.dart';
 import 'package:pocketgm/services/vibration_service.dart';
 import 'package:pocketgm/widgets/app_scaffold.dart';
@@ -15,7 +12,6 @@ import 'package:pocketgm/widgets/game/game_board.dart';
 import 'package:pocketgm/widgets/game/game_header.dart';
 import 'package:pocketgm/widgets/game/game_over_overlay.dart';
 import 'package:pocketgm/widgets/game/input_area.dart';
-import 'package:pocketgm/widgets/game/opening_guide.dart';
 import 'package:pocketgm/widgets/game/start_game_overlay.dart';
 
 class GameScreen extends ConsumerStatefulWidget {
@@ -32,16 +28,13 @@ class _GameScreenState extends ConsumerState<GameScreen> {
   void initState() {
     super.initState();
     _initializeStockfish();
-    // Connect VibrationService to BluetoothProvider for ESP32 support
+    // connect VibrationService to BluetoothProvider for ESP32 support
     final btProvider = ref.read(bluetoothProvider);
     VibrationService().setBluetoothProvider(btProvider);
   }
 
   @override
   void dispose() {
-    // We can't access ref here easily in dispose to read provider if the widget is unmounted?
-    // Actually we can use ref.read in dispose if we are careful, but usually it's better to do cleanup in deactivate or just rely on the provider state management.
-    // But the user wants to reset game when leaving screen.
     super.dispose();
   }
 
@@ -61,44 +54,14 @@ class _GameScreenState extends ConsumerState<GameScreen> {
   Widget build(BuildContext context) {
     final gameState = ref.watch(gameProvider);
     final settings = ref.watch(settingsProvider);
-    final visualization = ref.watch(visualizationProvider);
 
     return AppScaffold(
-      title:
-          "Playing as ${gameState.playingAs.name[0].toUpperCase()}${gameState.playingAs.name.substring(1)}",
-      actions: [
-        // Visualization toggle button
-        IconButton(
-          onPressed: () {
-            ref.read(visualizationProvider.notifier).toggleEnabled();
-          },
-          icon: Icon(
-            visualization.isEnabled ? Icons.visibility : Icons.visibility_off,
-            color: visualization.isEnabled ? Colors.orange : null,
-          ),
-          tooltip: 'Visualisatie Modus',
-        ),
-        // Openings button
-        IconButton(
-          onPressed: () {
-            context.push("/openings");
-          },
-          icon: const Icon(Icons.menu_book_rounded),
-          tooltip: 'Openingszetten',
-        ),
-        IconButton(
-          onPressed: () {
-            context.push("/settings");
-          },
-          icon: const Icon(Icons.settings),
-        ),
-      ],
+      title: "Playing as ${gameState.playingAs.name}",
       body: Stack(
         children: [
           Column(
             children: [
               const GameHeader(),
-              const OpeningGuide(), // Opening guide widget
               const SizedBox(height: 24),
               Expanded(
                 child: LayoutBuilder(

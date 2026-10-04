@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:stockfish/stockfish.dart';
 
 class StockfishService {
-  // Singleton pattern
   static final StockfishService _instance = StockfishService._internal();
   factory StockfishService() => _instance;
   StockfishService._internal();
@@ -14,8 +13,6 @@ class StockfishService {
   String? _lastBestMove;
   bool isStockfishInitialized = false;
 
-  // Stream controller for evaluation score (centipawns)
-  // Positive = White advantage, Negative = Black advantage
   final _evaluationController = StreamController<double>.broadcast();
   Stream<double> get evaluationStream => _evaluationController.stream;
 

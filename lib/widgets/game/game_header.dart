@@ -68,7 +68,7 @@ class GameHeader extends ConsumerWidget {
             const SizedBox(width: 12),
             _buildInfoBox(
               context,
-              label: "Last Move",
+              label: "Last move",
               value: gameState.lastMove?.toString() ?? "-",
               color: black,
             ),

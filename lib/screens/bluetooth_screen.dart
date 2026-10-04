@@ -24,10 +24,6 @@ class _BluetoothScreenState extends ConsumerState<BluetoothScreen> {
 
   @override
   void dispose() {
-    // Stop scanning when screen closes
-    // We might want to keep scanning if we are in the process of connecting?
-    // But generally good practice to stop.
-    // ref.read(bluetoothProvider).stopScan(); // Can't call ref in dispose easily without storing it
     super.dispose();
   }
 
@@ -76,7 +72,7 @@ class _BluetoothScreenState extends ConsumerState<BluetoothScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Text(
-                              'Connected to:',
+                              'Connected to',
                               style: TextStyle(
                                 color: Colors.white70,
                                 fontSize: 12,
@@ -89,7 +85,7 @@ class _BluetoothScreenState extends ConsumerState<BluetoothScreen> {
                                         .toString(),
                               style: const TextStyle(
                                 color: white,
-                                fontWeight: FontWeight.bold,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ],
@@ -111,7 +107,7 @@ class _BluetoothScreenState extends ConsumerState<BluetoothScreen> {
                       ref.read(bluetoothProvider).sendVibration(500);
                     },
                     icon: const Icon(Icons.vibration),
-                    label: const Text('Test Motor (500ms)'),
+                    label: const Text('Test vibration (500 ms)'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.orange,
                       foregroundColor: Colors.white,
@@ -134,7 +130,7 @@ class _BluetoothScreenState extends ConsumerState<BluetoothScreen> {
                         const SizedBox(height: 16),
                         Text(
                           bluetooth.isScanning
-                              ? 'Scanning for devices...'
+                              ? 'Looking for devices…'
                               : 'No devices found',
                           style: const TextStyle(color: Colors.white54),
                         ),
@@ -142,7 +138,7 @@ class _BluetoothScreenState extends ConsumerState<BluetoothScreen> {
                           TextButton(
                             onPressed: () =>
                                 ref.read(bluetoothProvider).startScan(),
-                            child: const Text('Scan Again'),
+                            child: const Text('Scan again'),
                           ),
                       ],
                     ),
@@ -161,7 +157,7 @@ class _BluetoothScreenState extends ConsumerState<BluetoothScreen> {
                         title: Text(
                           device.platformName.isNotEmpty
                               ? device.platformName
-                              : 'Unknown Device',
+                              : 'Unknown device',
                           style: const TextStyle(color: white),
                         ),
                         subtitle: Text(

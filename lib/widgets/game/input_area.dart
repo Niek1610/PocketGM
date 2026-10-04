@@ -70,15 +70,15 @@ class InputArea extends ConsumerWidget {
               items: const [
                 DropdownMenuItem(
                   value: InputMode.bleMode,
-                  child: Text("PocketGM"),
+                  child: Text("PocketGM device"),
                 ),
                 DropdownMenuItem(
                   value: InputMode.standaloneMode,
-                  child: Text("Standalone"),
+                  child: Text("Phone volume buttons"),
                 ),
                 DropdownMenuItem(
                   value: InputMode.interfaceMode,
-                  child: Text("Interface"),
+                  child: Text("On-screen buttons"),
                 ),
               ],
               onChanged: (value) {
@@ -93,7 +93,7 @@ class InputArea extends ConsumerWidget {
           Row(
             children: [
               const Text(
-                "Rotate Input",
+                "Rotate input",
                 style: TextStyle(
                   color: Colors.white70,
                   fontSize: 12,
@@ -175,9 +175,9 @@ class InputArea extends ConsumerWidget {
         return _buildInstructionCard(
           context,
           icon: Icons.volume_up_rounded,
-          title: "Volume Control",
+          title: "Phone volume buttons",
           text:
-              "Use volume buttons to input moves.\nCols: $colRange | Rows: $rowRange",
+              "Enter moves with the volume buttons.\nColumns: $colRange · Rows: $rowRange",
         );
 
       case InputMode.bleMode:
@@ -186,9 +186,9 @@ class InputArea extends ConsumerWidget {
             _buildInstructionCard(
               context,
               icon: Icons.bluetooth_connected_rounded,
-              title: "Bluetooth Device",
+              title: "Bluetooth device",
               text:
-                  "Connect PocketGM device.\nCols: $colRange | Rows: $rowRange",
+                  "Connect your PocketGM device to enter moves.\nColumns: $colRange · Rows: $rowRange",
             ),
           ],
         );
@@ -226,7 +226,7 @@ class InputArea extends ConsumerWidget {
                 label,
                 style: TextStyle(
                   color: isActive ? Colors.white : Colors.white38,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
                   fontSize: 16,
                 ),
               ),
@@ -269,7 +269,7 @@ class InputArea extends ConsumerWidget {
                   title,
                   style: const TextStyle(
                     color: Colors.white,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w600,
                     fontSize: 14,
                   ),
                 ),

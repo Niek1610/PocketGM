@@ -28,17 +28,12 @@ class OpeningGuide extends ConsumerWidget {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            buttonColor.withOpacity(0.3),
-            buttonColor.withOpacity(0.1),
-          ],
+          colors: [buttonColor.withOpacity(0.3), buttonColor.withOpacity(0.1)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: buttonColor.withOpacity(0.5),
-        ),
+        border: Border.all(color: buttonColor.withOpacity(0.5)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -46,18 +41,14 @@ class OpeningGuide extends ConsumerWidget {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.menu_book_rounded,
-                color: buttonColor,
-                size: 18,
-              ),
+              Icon(Icons.menu_book_rounded, color: buttonColor, size: 18),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
                   openings.selectedOpening!.name,
                   style: const TextStyle(
                     color: Colors.white,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w600,
                     fontSize: 14,
                   ),
                   overflow: TextOverflow.ellipsis,
@@ -115,9 +106,9 @@ class OpeningGuide extends ConsumerWidget {
                 child: InkWell(
                   onTap: () => _playNextMove(ref, from, to),
                   onLongPress: () {
-                    ref.read(openingsProvider.notifier).setAutoPlay(
-                          !openings.isAutoPlayEnabled,
-                        );
+                    ref
+                        .read(openingsProvider.notifier)
+                        .setAutoPlay(!openings.isAutoPlayEnabled);
                   },
                   borderRadius: BorderRadius.circular(8),
                   child: Container(
@@ -138,7 +129,8 @@ class OpeningGuide extends ConsumerWidget {
                 color: Colors.white.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
                 child: InkWell(
-                  onTap: () => ref.read(openingsProvider.notifier).clearSelection(),
+                  onTap: () =>
+                      ref.read(openingsProvider.notifier).clearSelection(),
                   borderRadius: BorderRadius.circular(8),
                   child: Container(
                     padding: const EdgeInsets.all(10),

@@ -1,4 +1,3 @@
-import 'package:dartchess/dartchess.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pocketgm/constants/colors.dart';
@@ -27,12 +26,12 @@ class StartGameOverlay extends ConsumerWidget {
             "Ready to play?",
             style: Theme.of(context).textTheme.headlineSmall!.copyWith(
               color: Colors.white,
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: 8),
           Text(
-            "Playing as ${_formatSide(gameState.playingAs)}",
+            "Playing as ${gameState.playingAs.name}",
             style: TextStyle(
               color: Colors.white.withOpacity(0.6),
               fontSize: 16,
@@ -40,7 +39,7 @@ class StartGameOverlay extends ConsumerWidget {
           ),
           const SizedBox(height: 24),
           Text(
-            "Improve your game with real-time analysis and feedback.",
+            "Use your selected input method to enter moves.",
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Colors.white.withOpacity(0.8),
@@ -49,7 +48,7 @@ class StartGameOverlay extends ConsumerWidget {
           ),
           const SizedBox(height: 32),
           PrimaryButton(
-            text: "Start Game",
+            text: "Start game",
             onPressed: () {
               ref.read(gameProvider).startGame();
             },
@@ -59,9 +58,5 @@ class StartGameOverlay extends ConsumerWidget {
         ],
       ),
     );
-  }
-
-  String _formatSide(Side side) {
-    return side.name[0].toUpperCase() + side.name.substring(1);
   }
 }

@@ -32,9 +32,8 @@ class AppScaffold extends StatelessWidget {
             ? Text(
                 title!,
                 style: const TextStyle(
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
                   fontSize: 20,
-                  letterSpacing: 0.5,
                 ),
               )
             : null,

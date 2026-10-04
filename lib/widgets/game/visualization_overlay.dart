@@ -1,9 +1,4 @@
-import 'package:dartchess/dartchess.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pocketgm/providers/input_provider.dart';
-import 'package:pocketgm/providers/settings_provider.dart';
-import 'package:pocketgm/providers/visualization_provider.dart';
 
 /// Returns the squares to highlight based on current input state
 Set<String> getHighlightedSquares({
@@ -13,7 +8,7 @@ Set<String> getHighlightedSquares({
   required bool isFlipped,
 }) {
   final highlights = <String>{};
-  
+
   if (currentValue == 0 && partialMove.isEmpty) {
     return highlights;
   }
@@ -21,7 +16,7 @@ Set<String> getHighlightedSquares({
   // Get current selection based on step
   String? getCurrentChar() {
     if (currentValue == 0) return null;
-    
+
     if (inputStep % 2 == 0) {
       // Column (a-h)
       if (isFlipped) {
@@ -46,7 +41,7 @@ Set<String> getHighlightedSquares({
 
   // Add current selection highlight
   final currentChar = getCurrentChar();
-  
+
   if (inputStep == 0 && currentChar != null) {
     // Selecting from column - highlight entire column
     for (int row = 1; row <= 8; row++) {

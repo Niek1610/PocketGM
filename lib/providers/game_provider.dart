@@ -74,9 +74,9 @@ class GameProvider extends ChangeNotifier {
   String get gameResultMessage {
     switch (gameResult) {
       case GameResult.whiteWins:
-        return 'White wins by checkmate!';
+        return 'White wins by checkmate';
       case GameResult.blackWins:
-        return 'Black wins by checkmate!';
+        return 'Black wins by checkmate';
       case GameResult.draw:
         if (_position.isStalemate) return 'Draw by stalemate';
         if (_position.isInsufficientMaterial)

@@ -56,7 +56,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   SizedBox(height: 16),
                   Text(
                     textAlign: TextAlign.center,
-                    "a technical prototype that enables real-time chess analysis during over-the-board games.",
+                    "Chess analysis with move suggestions and vibration feedback.",
                     style: Theme.of(
                       context,
                     ).textTheme.bodyMedium!.copyWith(color: white),
@@ -65,7 +65,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "Play as:",
+                      "Play as",
                       style: Theme.of(
                         context,
                       ).textTheme.bodyMedium!.copyWith(color: white),
@@ -98,7 +98,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ),
                   SizedBox(height: 16),
                   PrimaryButton(
-                    text: "Play a new match",
+                    text: "Start game",
                     icon: Icons.play_arrow_rounded,
                     onPressed: () {
                       context.push('/game');
@@ -106,7 +106,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ),
                   Spacer(),
                   PrimaryButton(
-                    text: "Options",
+                    text: "Settings",
                     icon: Icons.settings_outlined,
                     onPressed: () {
                       context.push('/settings');

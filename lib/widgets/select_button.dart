@@ -50,7 +50,7 @@ class SelectButton extends StatelessWidget {
                 text!,
                 style: Theme.of(context).textTheme.labelLarge!.copyWith(
                   color: isWhite ? black : white,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
                 ),
               )
             : Text(

@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pocketgm/providers/game_provider.dart';
 import 'package:pocketgm/providers/input_provider.dart';
 import 'package:pocketgm/providers/settings_provider.dart';
-import 'package:pocketgm/providers/visualization_provider.dart';
 import 'package:pocketgm/widgets/game/visualization_overlay.dart';
 
 class GameBoard extends ConsumerWidget {
@@ -16,21 +15,17 @@ class GameBoard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final gameState = ref.watch(gameProvider);
     final settings = ref.watch(settingsProvider);
-    final visualization = ref.watch(visualizationProvider);
     final inputState = ref.watch(inputProvider);
 
-    // Calculate highlights for visualization mode
     final isFlipped =
         settings.playingAs == Side.black && settings.rotateBoardForBlack;
-    
-    final highlightedSquares = visualization.isEnabled
-        ? getHighlightedSquares(
-            currentValue: inputState.currentValue,
-            inputStep: inputState.inputStep,
-            partialMove: inputState.partialMove,
-            isFlipped: isFlipped,
-          )
-        : <String>{};
+
+    final highlightedSquares = getHighlightedSquares(
+      currentValue: inputState.currentValue,
+      inputStep: inputState.inputStep,
+      partialMove: inputState.partialMove,
+      isFlipped: isFlipped,
+    );
 
     return LayoutBuilder(
       builder: (context, constraints) {
